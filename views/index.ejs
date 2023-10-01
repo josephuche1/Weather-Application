@@ -25,7 +25,6 @@
                 <div id="forecast-temperature"><%= temperature[i] %>°</div>
             </div>
           <% } %>
-            <hr>
         </div>
       </div>
     </section>
@@ -66,10 +65,10 @@
    </section>
   <section id="day-forecast" class="shadow">
     <div class="container">
-      <% for(let i = 0; i < daily.length; i++){ %>
+      <% for(let i = 0; i < 7; i++){ %>
         <div class="row">
             <div id="day" class="col-4"><%= date[i] %></div>
-            <div id="weather" class="col-8"><img src="/images/image_<%= weather-code[i] %>.png" alt="Clear Sky"><%= weather-text[i] %></div>
+            <div id="weather" class="col-8"><img src="/images/image_<%= dailyWeatherCode[i] %>.png" alt="Clear Sky"><%= weatherText[i] %></div>
         </div>
       <% } %>
     </div>
