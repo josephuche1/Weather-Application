@@ -17,12 +17,14 @@ let windSpeed;
 let precipitaionProb;
 let uvIndex;
 
-
+let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 let weatherText = [];
 let time = [];
+let dateDay = [];
 
 let d = new Date();
 let hours = d.getHours();
+let day = d.getDay();
 
 
 // Function to convert weather codes to text.
@@ -105,6 +107,24 @@ function getTimeFromDateAndTime(req, res, next){
      time.push(dateaAndTime[i].slice(-5, dateaAndTime.length));
   }
   next();
+}
+
+function addDaysToArray(req, res, next){
+    let length = data.daily.time.length;
+    let counter = 0;
+    for(let i = day; i < length; i++){
+        if(i == day){
+            dateDay.push("Today");
+        }
+        else if(i == length-1 && counter < length){
+            dateDay.push(days[i]);
+            i = 0;
+        }
+        else{
+            dateDay.push(days[i]);
+        }
+        counter++;
+    }
 }
 
 const app = express();
