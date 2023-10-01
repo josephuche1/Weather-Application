@@ -10,8 +10,8 @@ main.grid-container{
     grid-template-columns: 0.2fr 2fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     height: 1000px;
-    background-color: rgb(11, 19, 30);
-    color:white;
+    background-color: #CCC8AA;
+    color:#7D7C7C;
 }
 /*Sidebar Styles: start*/
 #sidebar{
@@ -22,7 +22,7 @@ main.grid-container{
     grid-row: span 3;
     margin-top: 10px;
     margin-bottom: 10px;
-    background-color: rgb(32, 43, 59);
+    background-color: #F1EFEF;
     border-radius: 10px;
 }
 
@@ -41,7 +41,7 @@ svg.bi-cloud-sun-fill, svg.bi-geo-alt-fill{
     height: 40%;
     width: 60%;
     flex-grow: inherit;
-    color: white;
+    color: #7D7C7C;
 }
 /*Sidebar styles: end*/
 
@@ -111,7 +111,7 @@ section#hero{
 section#todays-forecast{
     height:300px;
     margin: 5px 15px 10px 15px;
-    background-color: rgb(32, 43, 59);
+    background-color: #F1EFEF;
     padding: 10px;
     border-radius: 20px;
 }
@@ -152,7 +152,7 @@ section#todays-forecast{
 /*Air condition Style*/
 #air-conditions{
     height: 400px;
-    background-color: rgb(32, 43, 59);
+    background-color: #F1EFEF;
     border-radius: 20px;
     padding: 20px;
     margin: 5px 15px 10px 15px;
@@ -195,7 +195,7 @@ div.text{
     grid-row-start: 1;
     grid-row: span 3;
     margin-top: 10px;
-    background-color: rgb(32, 43, 59);
+    background-color: #F1EFEF;
     border-radius: 20px;
 }
 #day-forecast .container{
