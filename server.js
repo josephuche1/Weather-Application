@@ -6,8 +6,24 @@ import axios from "axios";
 /*
 
 */
-let weatherCodeArray; 
+let data;
+let currentTemperature;
+let currentWeatherCode;
+let dailyWeatherCodeArray; 
+let dateaAndTime;
+let tempDegrees;
+let realFeelTemp;
+let windSpeed;
+let precipitaionProb;
+let uvIndex;
+
+
 let weatherText = [];
+let time = [];
+
+let d = new Date();
+let hours = d.getHours();
+
 
 // Function to convert weather codes to text.
 function addWeatherText(req, res, next){
@@ -61,6 +77,36 @@ function addWeatherText(req, res, next){
      next();
 }
 
+//Function to equate the parts of the response from the API that  will be used to their respective variable
+function equateAllParameters(req, res, next){
+    dailyWeatherCodeArray = data.daily.weathercode;
+
+    if(hours >= 18 && hours <= 23){
+        dateaAndTime = data.hourly.time.slice(-6, data.hourly.time.length);
+        tempDegrees = data.hourly.temperature_2m.slice(-6, data.hourly.temperature_2m.length)
+    }
+    else{
+       dateaAndTime = data.hourly.time.slice(hours, hours+7);
+       tempDegrees = data.hourly.temperature_2m.slice(hours, hours+7);
+    }
+    currentWeatherCode = data.current_weather.weathercode;
+    currentTemperature = data.hourly.temperature_2m[hours];
+    realFeelTemp = data.current_weather.temperature;
+    windSpeed = data.current_weather.windspeed;
+    precipitaionProb = data.daily.precipitation_probability_max[0];
+    uvIndex = data.daily.uv_index_max[0];
+
+    next();
+}
+
+//function to get the time from the dateAndTime array
+function getTimeFromDateAndTime(req, res, next){
+  for(let i = 0; i < dateaAndTime.length; i++){
+     time.push(dateaAndTime[i].slice(-5, dateaAndTime.length));
+  }
+  next();
+}
+
 const app = express();
 const port = 3000;
 
@@ -68,14 +114,15 @@ const port = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(addWeatherText);
+app.use(equateAllParameters);
+app.use(getTimeFromDateAndTime);
 
 
 app.get("/", async (req, res) => {
 
     try{
         const response = await axios.get("https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m,rain,surface_pressure&daily=weathercode,sunset,uv_index_max,temperature_2m_max,precipitation_probability_max&timezone=auto&current_weather=true&forecast_days=7");
-        const data = response.data;
-        weatherCodeArray = data.daily.weathercode;
+        data = response.data;
         res.render("index.ejs");
 
     }catch(error){
