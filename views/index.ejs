@@ -1,13 +1,4 @@
 <%- include("partials/header.ejs") %>
-   <section id="sidebar" class="shadow">
-      <a href="/"><button class="nav-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cloud-sun-fill" viewBox="0 0 16 16">
-        <path d="M11.473 11a4.5 4.5 0 0 0-8.72-.99A3 3 0 0 0 3 16h8.5a2.5 2.5 0 0 0 0-5h-.027z"/>
-        <path d="M10.5 1.5a.5.5 0 0 0-1 0v1a.5.5 0 0 0 1 0v-1zm3.743 1.964a.5.5 0 1 0-.707-.707l-.708.707a.5.5 0 0 0 .708.708l.707-.708zm-7.779-.707a.5.5 0 0 0-.707.707l.707.708a.5.5 0 1 0 .708-.708l-.708-.707zm1.734 3.374a2 2 0 1 1 3.296 2.198c.199.281.372.582.516.898a3 3 0 1 0-4.84-3.225c.352.011.696.055 1.028.129zm4.484 4.074c.6.215 1.125.59 1.522 1.072a.5.5 0 0 0 .039-.742l-.707-.707a.5.5 0 0 0-.854.377zM14.5 6.5a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z"/>
-      </svg></button></a>
-      <a href="/location"><button class="nav-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
-        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-      </svg></button></a>
-   </section>
    <section id="center">
     <section id="hero">
       <div id="current-country-name">Cyprus</div>
@@ -28,7 +19,7 @@
         </div>
       </div>
     </section>
-    <section id="air-conditions" class="shadow">
+    <section id="air-conditions" class="shadow pb-1">
      <div class="section-title">AIR CONDITIONS</div>
      <div class="grid-container">
        <div class="grid-item">
@@ -47,9 +38,8 @@
        </div>
 
        <div class="grid-item">
-        <div class="text"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-speedometer2 my-2 me-4 ms-2" viewBox="0 0 16 16">
-          <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4zM3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
-          <path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A7.988 7.988 0 0 1 0 10zm8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3z"/>
+        <div class="text"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-droplet-fill" viewBox="0 0 16 16">
+          <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
         </svg> <p class="my-2 me-4 ms-2">Chance of Rain</p></div>
         <div class="actual-value"><%= chanceOfRain %> %</div>
        </div>
@@ -63,12 +53,12 @@
       </div>
     </section>
    </section>
-  <section id="day-forecast" class="shadow">
+  <section id="day-forecast" class="shadow py-3 me-4">
     <div class="container">
       <% for(let i = 0; i < 7; i++){ %>
         <div class="row">
             <div id="day" class="col-4"><%= date[i] %></div>
-            <div id="weather" class="col-8"><img src="/images/image_<%= dailyWeatherCode[i] %>.png" alt="Clear Sky"><%= weatherText[i] %></div>
+            <div id="weather" class="col-8 d-flex"><img src="/images/image_<%= dailyWeatherCode[i] %>.png" alt="Clear Sky" ><p class="d-flex justify-content-center align-items-center mx-5 w-100"><%= weatherText[i] %></p></div>
         </div>
       <% } %>
     </div>

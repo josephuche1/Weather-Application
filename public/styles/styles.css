@@ -37,12 +37,14 @@ button.nav-button{
     min-width: 50px;
     min-height: 100px;
 }
+
 svg.bi-cloud-sun-fill, svg.bi-geo-alt-fill{
     height: 40%;
     width: 60%;
     flex-grow: inherit;
     color: #7D7C7C;
 }
+
 /*Sidebar styles: end*/
 
 /*Center part styles: start*/
@@ -59,7 +61,8 @@ svg.bi-cloud-sun-fill, svg.bi-geo-alt-fill{
 }
 
 section .section-title{
-   margin: 5px;
+   margin-top: 3px;
+   margin-bottom: 1px;
    font-weight: bolder;
    font-size: 15px;
 }
@@ -94,16 +97,16 @@ section#hero{
     font-weight: bold;
     font-size:50px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    margin-left: 70px;
 }
 
 #current-temperature{
     font-weight: bold;
     font-size:100px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    margin-left: 70px;
 }
 
 /*Todays forecast Style*/
@@ -125,7 +128,7 @@ section#todays-forecast{
 
 #forecast-temperature{
     font-weight: bolder;
-    font-size: 30px;
+    font-size: 25px;
     margin-bottom: 20px;
 }
 
@@ -139,6 +142,7 @@ section#todays-forecast{
     height:100%;
     width : 100%;
 }
+
 #forecast-time{
     font-weight: bold;
     margin-top: 20px;
@@ -170,23 +174,29 @@ section#todays-forecast{
     display: grid;
     grid-template-columns: 0.3fr 1fr;
     grid-template-rows: 0.2fr 0.5fr ;
+    gap: -5px;
 }
 
 div.text{
     display: flex;
     grid-column: span 2;
 }
+
 .text p{
     font-weight: bold;
     font-size: 20px;
 }
+
 .grid-item .actual-value{
     grid-column-start: 2;
     font-weight: bold;
-    font-size: 40px;
+    font-size: 35px;
     margin-right: 20px;
     margin-left: -30px;
+    margin-bottom: 20px;
+    margin-top: 2px;
 }
+
 /*Center part styles: end*/
 
 /*day forecast style: start*/
@@ -215,6 +225,11 @@ div.text{
     font-weight: bold;
 }
 /*day forecast style: end*/
+
+section#footer{
+    color: #7D7C7C
+}
+
 img{
     height: 100px;
     width: 100px;

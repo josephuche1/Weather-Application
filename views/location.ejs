@@ -1,0 +1,9 @@
+<%- include("partials/header.ejs") %>
+
+   <section id="location-form">
+      <form action="/submit" method="post">
+          <label for="address">Address<input type="text" name="address" placeholder="38 Upper Montagu Street, London W1H 1LJ, United Kingdom" id="address"></label>
+          <input type="submit" id="submit" class="col-4 rounded-end-2" value="Use Location">
+      </form>
+   </section>
+<%- include("partials/footer.ejs") %>

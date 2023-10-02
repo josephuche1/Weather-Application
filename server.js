@@ -17,8 +17,10 @@ let realFeelTemp;
 let windSpeed;
 let precipitaionProb;
 let uvIndex;
+let currentTab;
 
 let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+let tabs = ["weather", "location"];
 let weatherText = [];
 let time = [];
 let dateDay = [];
@@ -138,7 +140,7 @@ app.use(express.static("public"));
 
 
 app.get("/", async (req, res) => {
-
+    currentTab = tabs[0]
     try{
         const response = await axios.get("https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m,rain,surface_pressure,weathercode&daily=weathercode,sunset,uv_index_max,temperature_2m_max,precipitation_probability_max&timezone=auto&current_weather=true&forecast_days=7");
         data = response.data;
@@ -148,7 +150,7 @@ app.get("/", async (req, res) => {
         getTimeFromDateAndTime();
         addDaysToArray();
         
-        res.render("index.ejs",{currentTemperature: currentTemperature, currentWeatherCode: currentWeatherCode, time: time, weathercode:hourlyWeatherCodeArray, temperature: tempDegrees, realFeel: realFeelTemp, windSpeed: windSpeed, chanceOfRain: precipitaionProb, currentUvIndex: uvIndex, date: dateDay, dailyWeatherCode : dailyWeatherCodeArray, weatherText: weatherText } );
+        res.render("index.ejs",{tab: currentTab, currentTemperature: currentTemperature, currentWeatherCode: currentWeatherCode, time: time, weathercode:hourlyWeatherCodeArray, temperature: tempDegrees, realFeel: realFeelTemp, windSpeed: windSpeed, chanceOfRain: precipitaionProb, currentUvIndex: uvIndex, date: dateDay, dailyWeatherCode : dailyWeatherCodeArray, weatherText: weatherText } );
 
     }catch(error){
         console.error(`failed to make request ${error.message}`)
@@ -156,6 +158,11 @@ app.get("/", async (req, res) => {
 
     }
     
+});
+
+app.get("/location", (req, res) =>{
+    currentTab = tabs[1];
+    res.render("location.ejs", {tab: currentTab});
 });
 
 app.listen(port, ()=>{
