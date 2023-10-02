@@ -142,7 +142,7 @@ app.use(express.static("public"));
 app.get("/", async (req, res) => {
     currentTab = tabs[0]
     try{
-        const response = await axios.get("https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m,rain,surface_pressure,weathercode&daily=weathercode,sunset,uv_index_max,temperature_2m_max,precipitation_probability_max&timezone=auto&current_weather=true&forecast_days=7");
+        const response = await axios.get("https://api.open-meteo.com/v1/forecast?latitude=35.1659936&longitude=33.3366249&hourly=temperature_2m,rain,surface_pressure,weathercode&daily=weathercode,sunset,uv_index_max,temperature_2m_max,precipitation_probability_max&timezone=auto&current_weather=true&forecast_days=7");
         data = response.data;
         
         assignAllParameters();
