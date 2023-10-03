@@ -3,9 +3,8 @@ import express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
 import fs from 'node:fs/promises';
-/*
 
-*/
+// Variables Declaration
 let data;
 let currentTemperature;
 let currentWeatherCode;
@@ -25,16 +24,19 @@ let address = "";
 const filePath = './location API key.txt';
 let key;
 
+// lists declaration
 let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 let tabs = ["weather", "location"];
 let weatherText = [];
 let time = [];
 let dateDay = [];
 
+//getting information from the current date.
 let d = new Date();
 let hours = d.getHours();
 let day = d.getDay();
 
+// creating an express app and setting the port to 3000
 const app = express();
 const port = 3000;
 
@@ -121,6 +123,7 @@ function getTimeFromDateAndTime(){
     }
 }
 
+//function used to add the names of the various days to an array
 function addDaysToArray(){
     let length = data.daily.time.length;
     let counter = 0;
@@ -139,6 +142,7 @@ function addDaysToArray(){
     }
 }
 
+//function to change a the address so that it can be passed ass a query to the API without any errors
 function stringifyAddress(newAdress){
     let length = newAdress.length;
     for(let i = 0 ; i < length; i++){
@@ -153,10 +157,11 @@ function stringifyAddress(newAdress){
     }
 }
 
+// Middlewares to parse information given by the user and access static files stored in the public folder.
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-
+// Renders the default homepage
 app.get("/", async (req, res) => {
     currentTab = tabs[0]
     try{
@@ -177,20 +182,29 @@ app.get("/", async (req, res) => {
     
 });
 
+// renders the location page and allows users to enter the location of their choice.
 app.get("/location", async (req, res) =>{
     currentTab = tabs[1];
     res.render("location.ejs", {tab: currentTab});
 });
 
+// submits the address info provided by the user and redirects user to the home page
+// renders the location necessary information to the homepage.
 app.post("/submit", async (req, res) => {
     currentTab = tabs[0];
     stringifyAddress(req.body.address);
+
+    // a try-catch error handling method used to get the API key and store it as a variable 
+    // it will be used in the API link for authorization when requesting location data.
     try {
         const contents = await fs.readFile(filePath, { encoding: 'utf8' });
         key = contents;
     } catch (err) {
         console.error(err.message);
     }
+
+    // Using try-catch error handling method to request for location data
+    //Passing address and the API-key as parameters
     try{
         const response = await axios.get(`https://api.geoapify.com/v1/geocode/search?text=${address}&format=json&apiKey=${key}`);
         const data = response.data;
@@ -204,6 +218,7 @@ app.post("/submit", async (req, res) => {
     }
 });
 
+// Listening to port 3000
 app.listen(port, ()=>{
     console.log(`Server running from port ${port}`);
 });
