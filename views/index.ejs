@@ -1,7 +1,7 @@
 <%- include("partials/header.ejs") %>
    <section id="center">
     <section id="hero">
-      <div id="current-country-name">Cyprus</div>
+      <div id="current-country-name"><%= country %></div>
       <div id="current-temperature"><%= currentTemperature %>°</div>
       <div id="current-weather"><img src="/images/image_<%= currentWeatherCode %>.png" alt="clear sky" class="clear-sky-hero"></div>
     </section>

@@ -2,7 +2,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
-
+import fs from 'node:fs/promises';
 /*
 
 */
@@ -18,6 +18,12 @@ let windSpeed;
 let precipitaionProb;
 let uvIndex;
 let currentTab;
+let lon = 33.3366249;
+let lat = 35.1659936;
+let country = "Cyprus";
+let address = "";
+const filePath = './location API key.txt';
+let key;
 
 let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 let tabs = ["weather", "location"];
@@ -133,16 +139,28 @@ function addDaysToArray(){
     }
 }
 
+function stringifyAddress(newAdress){
+    let length = newAdress.length;
+    for(let i = 0 ; i < length; i++){
+        if(newAdress[i] == " "){
+            address += "%20"
+        }else if(newAdress[i] == ","){
+            address += "%2C";
+        }
+        else{
+            address += newAdress[i];
+        }
+    }
+}
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 
-
 app.get("/", async (req, res) => {
     currentTab = tabs[0]
     try{
-        const response = await axios.get("https://api.open-meteo.com/v1/forecast?latitude=35.1659936&longitude=33.3366249&hourly=temperature_2m,rain,surface_pressure,weathercode&daily=weathercode,sunset,uv_index_max,temperature_2m_max,precipitation_probability_max&timezone=auto&current_weather=true&forecast_days=7");
+        const response = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,rain,surface_pressure,weathercode&daily=weathercode,sunset,uv_index_max,temperature_2m_max,precipitation_probability_max&timezone=auto&current_weather=true&forecast_days=7`);
         data = response.data;
         
         assignAllParameters();
@@ -150,19 +168,40 @@ app.get("/", async (req, res) => {
         getTimeFromDateAndTime();
         addDaysToArray();
         
-        res.render("index.ejs",{tab: currentTab, currentTemperature: currentTemperature, currentWeatherCode: currentWeatherCode, time: time, weathercode:hourlyWeatherCodeArray, temperature: tempDegrees, realFeel: realFeelTemp, windSpeed: windSpeed, chanceOfRain: precipitaionProb, currentUvIndex: uvIndex, date: dateDay, dailyWeatherCode : dailyWeatherCodeArray, weatherText: weatherText } );
+        res.render("index.ejs",{country: country, tab: currentTab, currentTemperature: currentTemperature, currentWeatherCode: currentWeatherCode, time: time, weathercode:hourlyWeatherCodeArray, temperature: tempDegrees, realFeel: realFeelTemp, windSpeed: windSpeed, chanceOfRain: precipitaionProb, currentUvIndex: uvIndex, date: dateDay, dailyWeatherCode : dailyWeatherCodeArray, weatherText: weatherText } );
 
     }catch(error){
         console.error(`failed to make request ${error.message}`)
-        res.render("index.ejs");
-
+        res.render("error.ejs");
     }
     
 });
 
-app.get("/location", (req, res) =>{
+app.get("/location", async (req, res) =>{
     currentTab = tabs[1];
     res.render("location.ejs", {tab: currentTab});
+});
+
+app.post("/submit", async (req, res) => {
+    currentTab = tabs[0];
+    stringifyAddress(req.body.address);
+    try {
+        const contents = await fs.readFile(filePath, { encoding: 'utf8' });
+        key = contents;
+    } catch (err) {
+        console.error(err.message);
+    }
+    try{
+        const response = await axios.get(`https://api.geoapify.com/v1/geocode/search?text=${address}&format=json&apiKey=${key}`);
+        const data = response.data;
+        lon = data.results[0].lon;
+        lat = data.results[0].lat;
+        country = data.results[0].country;
+        res.redirect("/");
+    }catch(error){
+        console.error(`failed to make request ${error.message}`)
+        res.render("error.ejs");
+    }
 });
 
 app.listen(port, ()=>{
