@@ -28,19 +28,19 @@ The Error Page is a helpful feature that gracefully handles any server errors th
 
 <a href="https://nodejs.org/api/"><h3>Node.js:</h3></a> The backend is powered by Node.js, providing a scalable and efficient server environment.
 
-<h3>Express.js:</h3> Express.js is used to create a robust and flexible web application framework.
+<a href="https://expressjs.com/"><h3>Express.js:</h3></a> Express.js is used to create a robust and flexible web application framework.
 
-<h3>Bootstrap:</h3> Bootstrap is employed for responsive and visually appealing front-end design.
+<a href="https://getbootstrap.com/"><h3>Bootstrap:</h3></a> Bootstrap is employed for responsive and visually appealing front-end design.
 
-<h3>EJS (Embedded JavaScript):</h3> EJS templates are used for dynamic content rendering, allowing for seamless updates of weather information.
+<a href="https://www.npmjs.com/package/ejs"><h3>EJS (Embedded JavaScript):</h3></a> EJS templates are used for dynamic content rendering, allowing for seamless updates of weather information.
 
-<h3>Axios:</h3> Axios is utilized for making HTTP requests to fetch data from external APIs.
+<a href="https://axios-http.com/docs/intro"><h3>Axios:</h3></a> Axios is utilized for making HTTP requests to fetch data from external APIs.
 
-<h3>Body-Parser npm:</h3> Body-Parser is used to parse incoming request bodies, simplifying data retrieval and processing.
+<a href="https://www.npmjs.com/package/body-parser"><h3>Body-Parser npm:</h3></a> Body-Parser is used to parse incoming request bodies, simplifying data retrieval and processing.
 
-<h3>Open-Meteo Weather Forecast API:</h3> This API provides accurate weather data for the application.
+<a href="https://open-meteo.com/en/docs"><h3>Open-Meteo Weather Forecast API:</h3></a> This API provides accurate weather data for the application.
 
-<h3>Geoapify Geocoding API:</h3> Geoapify is used for obtaining location information, including longitude and latitude.
+<a href="https://apidocs.geoapify.com/docs/geocoding/forward-geocoding/#about"><h3>Geoapify Geocoding API:</h3></a> Geoapify is used for obtaining location information, including longitude and latitude.
 
 
 
