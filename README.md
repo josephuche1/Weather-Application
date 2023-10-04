@@ -42,6 +42,7 @@ The Error Page is a helpful feature that gracefully handles any server errors th
 
 <h3>Geoapify Geocoding API:</h3> <a href="https://apidocs.geoapify.com/docs/geocoding/forward-geocoding/#about">Geoapify</a> is used for obtaining location information, including longitude and latitude.
 
+<hr>
 
 ## Running the Weather Web Application Locally
 
