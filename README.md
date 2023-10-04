@@ -58,7 +58,7 @@ npm i
 
 ### Step 2: Get Your Geoapify Geocoding API Key
 
-1. Go to the [Geoapify Geocoding API]([https://www.geoapify.com/geocoding-api/](https://apidocs.geoapify.com/docs/geocoding/forward-geocoding/#about)) and sign up or log in to get a unique API key.
+1. Go to the [Geoapify Geocoding API](https://apidocs.geoapify.com/docs/geocoding/forward-geocoding/#about) and sign up or log in to get a unique API key.
 
 2. After obtaining your API key, copy it to your clipboard.
 
