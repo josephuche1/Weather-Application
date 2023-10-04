@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Weather Web Application is a user-friendly platform designed to provide accurate weather forecasts for locations around the world. Powered by two robust APIs, Open-Meteo for weather data and Geoapify for geocoding information, this web application ensures users have access to up-to-date weather information at their fingertips. Click <a href="https://github.com/josephuche1/Weather-Application/edit/main/README.md#running-the-weather-web-application-locally">Here</a> to see the steps on how to run it on your local computer
+The Weather Web Application is a user-friendly platform designed to provide accurate weather forecasts for locations around the world. Powered by two robust APIs, Open-Meteo for weather data and Geoapify for geocoding information, this web application ensures users have access to up-to-date weather information at their fingertips. Click <a href="https://github.com/josephuche1/Weather-Application#running-the-weather-web-application-locally">Here</a> to see the steps on how to run it on your local computer
 
 ## Features
 
