@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Weather Web Application is a user-friendly platform designed to provide accurate weather forecasts for locations around the world. Powered by two robust APIs, Open-Meteo for weather data and Geoapify for geocoding information, this web application ensures users have access to up-to-date weather information at their fingertips.
+The Weather Web Application is a user-friendly platform designed to provide accurate weather forecasts for locations around the world. Powered by two robust APIs, Open-Meteo for weather data and Geoapify for geocoding information, this web application ensures users have access to up-to-date weather information at their fingertips. Click <a href="https://github.com/josephuche1/Weather-Application#running-the-weather-web-application-locally">Here</a> to see the steps on how to run it on your local computer
 
 ## Features
 
@@ -10,19 +10,19 @@ The Weather Web Application is a user-friendly platform designed to provide accu
 
 The Home Page serves as the default landing page, displaying the current weather forecast for Cyprus. Users can quickly access essential weather information, including temperature, humidity, wind speed, and more. The intuitive design and clean layout make it easy for users to grasp the weather conditions at a glance.
 
-<img src="./Screenshot (115).png" alt="Weather Web Application home page">
+<img src="./readMeImages/Screenshot (115).png" alt="Weather Web Application home page">
 
 ### 2. Location Page
 
 The Location Page empowers users to customize their weather experience. By entering a location of their choice, users can instantly retrieve the weather forecast for that specific area. This feature ensures that the Weather Web Application caters to the individual needs of each user, no matter where they are located.
 
-<img src="./Screenshot (116).png" alt="Weather Web Application location page">
+<img src="./readMeImages/Screenshot (116).png" alt="Weather Web Application location page">
 
 ### 3. Error Page
 
 The Error Page is a helpful feature that gracefully handles any server errors that may occur during usage. When an error is encountered, this page is displayed, ensuring users are informed about the issue and can take appropriate action or seek assistance if necessary.
 
-<img src="./Screenshot (117).png" alt="Weather Web Application error page">
+<img src="./readMeImages/Screenshot (117).png" alt="Weather Web Application error page">
 
 ## Technologies Used
 
@@ -42,28 +42,40 @@ The Error Page is a helpful feature that gracefully handles any server errors th
 
 <h3>Geoapify Geocoding API:</h3> <a href="https://apidocs.geoapify.com/docs/geocoding/forward-geocoding/#about">Geoapify</a> is used for obtaining location information, including longitude and latitude.
 
+<hr>
 
+## Running the Weather Web Application Locally
 
+Follow these steps to run the Weather Web Application on your local computer:
 
+### Step 1: Install Dependencies
 
+Open your terminal and navigate to the project's root folder. Run the following command to install the necessary dependencies:
 
+```bash
+npm i
+```
 
+### Step 2: Get Your Geoapify Geocoding API Key
 
+1. Go to the [Geoapify Geocoding API](https://apidocs.geoapify.com/docs/geocoding/forward-geocoding/#about) and sign up or log in to get a unique API key.
 
+2. After obtaining your API key, copy it to your clipboard.
 
+3. Locate the `apiKey.txt` file in the project's root folder and paste your API key into it. Save the file when you're done.
 
+### Step 3: Start the Server
 
+In your terminal, enter the following command to start the server using `nodemon`:
 
+```bash
+nodemon server.js
+```
 
+### Step 4: Access the Application
 
+Once the server is running, you will see a message indicating that the server is listening on a local URL, typically `http://localhost:3000`. Copy this URL and paste it into your web browser.
 
-
-
-
-
-
-
-
-
+Now, you can explore the Weather Web Application locally and enjoy real-time weather forecasts and information.
 
 
