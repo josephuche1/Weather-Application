@@ -227,7 +227,7 @@ app.post("/submit", async (req, res) => {
 // Listening to port 3000
 app.listen(port, ()=>{
     console.log(`Server running from port ${port}`);
-    console.log("Copy local URL to browser: localhost:3000");
+    console.log("Copy local URL to browser=> localhost:3000");
 });
 
 
