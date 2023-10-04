@@ -25,15 +25,15 @@ body{
 }
 
 h1#error-code{
-    width: 60%;
+    width: 100%;
     font-size: 200px;
     margin-bottom: 0;
     margin-top: -20px;
 }
 
 p#error-text{
-    width: 50%;
-    font-size: 35px;
+    width: 100%;
+    font-size: 25px;
 }
 
 

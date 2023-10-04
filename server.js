@@ -17,12 +17,17 @@ let windSpeed;
 let precipitaionProb;
 let uvIndex;
 let currentTab;
-let lon = 33.3366249;
-let lat = 35.1659936;
-let country = "Cyprus";
+let lon = 33.3366249; //default longitude
+let lat = 35.1659936; //default latitude
+let country = "Cyprus"; //default country
 let address = "";
-const filePath = './location API key.txt';
 let key;
+
+// Paste your
+// and paste your key there. 
+// Make sure you save it.
+const filePath = './apiKey.txt';
+
 
 // lists declaration
 let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -176,8 +181,8 @@ app.get("/", async (req, res) => {
         res.render("index.ejs",{country: country, tab: currentTab, currentTemperature: currentTemperature, currentWeatherCode: currentWeatherCode, time: time, weathercode:hourlyWeatherCodeArray, temperature: tempDegrees, realFeel: realFeelTemp, windSpeed: windSpeed, chanceOfRain: precipitaionProb, currentUvIndex: uvIndex, date: dateDay, dailyWeatherCode : dailyWeatherCodeArray, weatherText: weatherText } );
 
     }catch(error){
-        console.error(`failed to make request ${error.message}`)
-        res.render("error.ejs");
+        console.error(`Status: ${error.response.status}, Status Text: ${error.response.statusText}`);
+        res.render("error.ejs", {statusCode: error.response.status, statusMessage: error.response.statusText});
     }
     
 });
@@ -199,8 +204,8 @@ app.post("/submit", async (req, res) => {
     try {
         const contents = await fs.readFile(filePath, { encoding: 'utf8' });
         key = contents;
-    } catch (err) {
-        console.error(err.message);
+    } catch (error) {
+        console.error(error.message);
     }
 
     // Using try-catch error handling method to request for location data
@@ -213,14 +218,16 @@ app.post("/submit", async (req, res) => {
         country = data.results[0].country;
         res.redirect("/");
     }catch(error){
-        console.error(`failed to make request ${error.message}`)
-        res.render("error.ejs");
+        // Logging the status code and text to terminal
+        console.error(`Status: ${error.response.status}, Status Text: ${error.response.statusText}`);
+        res.render("error.ejs", {statusCode: error.response.status, statusMessage: error.response.statusText});
     }
 });
 
 // Listening to port 3000
 app.listen(port, ()=>{
     console.log(`Server running from port ${port}`);
+    console.log("Copy local URL to browser: localhost:3000");
 });
 
 
