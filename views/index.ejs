@@ -1,67 +1,46 @@
 <%- include("partials/header.ejs") %>
-   <section id="center">
-    <section id="hero">
-      <div id="current-country-name"><%= country %></div>
-      <div id="current-temperature"><%= currentTemperature %>°</div>
-      <div id="current-weather"><img src="/images/image_<%= currentWeatherCode %>.png" alt="clear sky" class="clear-sky-hero"></div>
-    </section>
-    <section id="todays-forecast" class="shadow">
-      <div class="section-title">TODAY'S FORECAST</div>
-      <div class="container">
-        <div class="row h-100">
-          <% for(let i = 0; i < 6; i++){ %>
-            <div class="item col-2">
-                <div id="forecast-time"><%= time[i] %></div>
-                <div id="forecast-weather"><img src="/images/image_<%= weathercode[i] %>.png"></div>
-                <div id="forecast-temperature"><%= temperature[i] %>°</div>
-            </div>
-          <% } %>
-        </div>
-      </div>
-    </section>
-    <section id="air-conditions" class="shadow pb-1">
-     <div class="section-title">AIR CONDITIONS</div>
-     <div class="grid-container">
-       <div class="grid-item">
-          <div class="text"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-thermometer-half my-2 me-4 ms-2" viewBox="0 0 16 16">
-            <path d="M9.5 12.5a1.5 1.5 0 1 1-2-1.415V6.5a.5.5 0 0 1 1 0v4.585a1.5 1.5 0 0 1 1 1.415z"/>
-            <path d="M5.5 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0V2.5zM8 1a1.5 1.5 0 0 0-1.5 1.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0l-.166-.15V2.5A1.5 1.5 0 0 0 8 1z"/>
-          </svg> <p class="my-2 me-4 ms-2">Real Feel</p></div>
-          <div class="actual-value"><%= realFeel %>°</div>
-       </div>
 
-       <div class="grid-item">
-        <div class="text"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-wind my-2 me-4 ms-2" viewBox="0 0 16 16">
-          <path d="M12.5 2A2.5 2.5 0 0 0 10 4.5a.5.5 0 0 1-1 0A3.5 3.5 0 1 1 12.5 8H.5a.5.5 0 0 1 0-1h12a2.5 2.5 0 0 0 0-5zm-7 1a1 1 0 0 0-1 1 .5.5 0 0 1-1 0 2 2 0 1 1 2 2h-5a.5.5 0 0 1 0-1h5a1 1 0 0 0 0-2zM0 9.5A.5.5 0 0 1 .5 9h10.042a3 3 0 1 1-3 3 .5.5 0 0 1 1 0 2 2 0 1 0 2-2H.5a.5.5 0 0 1-.5-.5z"/>
-        </svg> <p class="my-2 me-4 ms-2">Wind</p></div>
-        <div class="actual-value"><%= windSpeed %>km/h</div>
-       </div>
-
-       <div class="grid-item">
-        <div class="text"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-droplet-fill" viewBox="0 0 16 16">
-          <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
-        </svg> <p class="my-2 me-4 ms-2">Chance of Rain</p></div>
-        <div class="actual-value"><%= chanceOfRain %> %</div>
-       </div>
-
-       <div class="grid-item">
-        <div class="text"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-sun my-2 me-4 ms-2" viewBox="0 0 16 16">
-          <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
-          </svg> <p class="my-2 me-4 ms-2">UV Index</p></div>
-        <div class="actual-value"><%= currentUvIndex %></div>
-       </div>
-      </div>
-    </section>
-   </section>
-  <section id="day-forecast" class="shadow py-3 me-4">
-    <div class="container">
-      <% for(let i = 0; i < 7; i++){ %>
-        <div class="row">
-            <div id="day" class="col-4"><%= date[i] %></div>
-            <div id="weather" class="col-8 d-flex"><img src="/images/image_<%= dailyWeatherCode[i] %>.png" alt="Clear Sky" ><p class="d-flex justify-content-center align-items-center mx-5 w-100"><%= weatherText[i] %></p></div>
-        </div>
-      <% } %>
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between p-3 mb-4 border">
+    <div class="col-md-3 mb-2 mb-md-0">
+      <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
+        <img src="images/image_0.png" alt="Home" width="50" height="50">
+      </a>
     </div>
-  </section>
+    <div class="col-md-3 text-end">
+      <button type="button" class="btn btn-outline-primary me-2">Login</button>
+    </div>
+</header>
+
+<section id="signup">
+    <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+        <div class="row align-items-center g-lg-5 py-5">
+          <div class="col-lg-7 text-center text-lg-start">
+            <h1 class="display-4 fw-bold lh-1 text-body-emphasis mb-3">Vertically centered hero sign-up form</h1>
+            <p class="col-lg-10 fs-4">Below is an example form built entirely with Bootstrap’s form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
+          </div>
+          <div class="col-md-10 mx-auto col-lg-5">
+            <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">Email address</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                <label for="floatingPassword">Password</label>
+              </div>
+              <div class="checkbox mb-3">
+                <label>
+                  <input type="checkbox" value="remember-me"> Remember me
+                </label>
+              </div>
+              <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
+              <hr class="my-4">
+              <small class="text-body-secondary">By clicking Sign up, you agree to the terms of use.</small>
+            </form>
+          </div>
+        </div>
+      </div>
+</section>
+
 
 <%- include("partials/footer.ejs") %>
