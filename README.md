@@ -48,6 +48,13 @@ The Error Page is a helpful feature that gracefully handles any server errors th
 
 Follow these steps to run the Weather Web Application on your local computer:
 
+### Step 1: Clone the Repository
+
+If you haven't already, clone the Weather Web Application repository to your local machine. Open your terminal and run the following command
+
+```bash
+git clone https://github.com/josephuche1/Weather-Application
+```
 ### Step 1: Install Dependencies
 
 Open your terminal and navigate to the project's root folder. Run the following command to install the necessary dependencies:
