@@ -28,8 +28,20 @@
     </div>
 </nav>
 
-<section id="main-body" class="py-5">
-     
+<section id="main-body" class="py-5 border">
+  <div id="weather-forecast" class="container col-xxl-8 px-4 py-5 h-50">
+    <div class="row flex-lg-row-reverse align-items-center g-1 p-1">
+      <div class="col-10 col-sm-6 col-lg-6">
+        <img src="images/image_0.png" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+      </div>
+      <div class="col-lg-6">
+        <h1 class="display-1 fw-bold text-body-emphasis lh-1 mb-3">21°</h1>
+        <h2 class="fw-bold text-body-emphasis mb-1">Nicosia</h2>
+        <p class="lead fs-6">29/16 Feels like 22<br>Sat, 09:14</p>
+      </div>
+    </div>
+  </div>
+  
 </section>
 
 <%- include("partials/footer.ejs") %>
