@@ -13,7 +13,7 @@ app.use(express.static("public"));
 
 
 app.get("/", (req, res) => {
-    res.render("coming-soon.ejs");
+    res.render("index1.ejs");
 });
 
 app.listen(port, () => {
