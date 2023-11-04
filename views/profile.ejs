@@ -44,4 +44,63 @@
       </div>
 </section>
 
+<section id="profile-info">
+    <div class="container p-2 border bg-body-secondary rounded">
+        <div class="row">
+             <div class="col-12">
+                <small class="fw-bold d-block">USERNAME</small>
+                <div class="d-flex flex-row justify-content-between border-bottom mx-auto">
+                    <span class="fw-bold fs-5 ms-2">example123</span>
+                    <button data-bs-toggle="modal" data-bs-target="#modalLogin" class="btn bg-transparent">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                          </svg>
+                    </button>
+                </div>
+             </div>
+
+             <div class="col-12">
+                <small class="fw-bold d-block">PASSWORD</small>
+                <div class="d-flex flex-row justify-content-between border-bottom mx-auto">
+                    <span class="fw-bold fs-5 ms-2">*******</span>
+                    <button data-bs-toggle="modal" data-bs-target="#modalLogin" class="btn bg-transparent">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                          </svg>
+                    </button>
+                </div>
+             </div>
+
+             <div class="col-12">
+                <small class="fw-bold d-block">LOCATION</small>
+                <div class="d-flex flex-row justify-content-between mx-auto">
+                    <span class="fw-bold fs-5 ms-2">Nicosia</span>
+                    <button data-bs-toggle="modal" data-bs-target="#modalLogin" class="btn bg-transparent">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                          </svg>
+                    </button>
+                </div>
+             </div>
+       </div>
+    </div>
+
+    <div class="container bg-body-tertiary shadow my-2 rounded p-2">
+        <p class="text-danger display-4 fs-4 border-bottom">Delete Your Account</p>
+        <button class="btn btn-danger w-100 my-2" data-bs-toggle="modal" data-bs-target="#modalLogin">Delete My Account</button>
+    </div>
+</section>
+
+<footer class="py-1 my-0 mt-4 bg-body-secondary">
+    <ul class="nav justify-content-center pb-1 mb-1">
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Github</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">LinkedIn</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Email</a></li>
+    </ul>
+    <p class="text-center text-body-secondary">Created by Uche Joseph</p>
+</footer>
+
 <%- include("partials/footer.ejs") %>
