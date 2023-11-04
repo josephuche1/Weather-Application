@@ -13,7 +13,7 @@ app.use(express.static("public"));
 
 
 app.get("/", (req, res) => {
-    res.render("weather.ejs");
+    res.render("profile.ejs");
 });
 
 app.listen(port, () => {
