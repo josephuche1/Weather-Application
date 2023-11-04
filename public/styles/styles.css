@@ -3,3 +3,39 @@
     height: 3rem;
     border-radius: 0.75rem;
 }
+
+#main-body{
+    display:grid;
+    height: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr 0.5fr 0.5fr;
+    gap:10px;
+    margin-left: 10px;
+    margin-right:10px;
+    padding:5px;
+}
+
+#current-forecast{
+    grid-column: span 2;
+}
+
+#hourly-forecast{
+    order:3;
+    grid-column: span 2;
+}
+
+#daily-forecast{
+    grid-row:span 3;
+}
+
+#air-conditions{
+    order:4;
+    grid-column: span 2;
+}
+
+@media (max-width: 768px){
+    #main-body{
+        display: block;
+    }
+}
+
