@@ -72,6 +72,11 @@ function currentMore(daily, locationData){
     return current;
 }
 
+// function to collect and store all the necessary information on the
+// hourly forecast in an object
+// @param hourly Object is return from weather API
+// return `arrayHourly` an array containing all the necessary forecast information for
+// upto 6 hours from the current hour
 function hourlyEdit(hourly){
     const d = new Date();
     const hour = d.getHours();
@@ -98,7 +103,9 @@ function hourlyEdit(hourly){
     return arrayHourly;
 }
 
-function WeatherInterpretation(daily){
+// Function to help convert weathercodes to 
+// text that will be displayed to users
+function WeatherInterpretation(){
     const descriptions = {
         0: "Clear sky",
         1: "Mainly clear",
@@ -132,7 +139,32 @@ function WeatherInterpretation(daily){
     return descriptions;
 }
 
+// function to collect and store all the necessary information for a 7-day forecast in an object
+// @param daily Object is return from weather API
+// return `arrayDaily` an array containing all the necessary forecast information for
+// upto 7 days from the current hour
+function dailyEdit(daily){
+    const descriptions = WeatherInterpretation();
 
+    const dt = new Date();
+    const currentDay = dt.getDay();
+
+    const arrayDaily = [];
+
+    for(let i = 0; i < 7; i++){
+        const d = new Date(daily.time[i]);
+        const dy = d.getDay();
+        const dailyT = {
+            day: dy === currentDay?"Today":days[dy],
+            weathercode: daily.weathercode[i],
+            description: descriptions[daily.weathercode[i]],
+            high: daily.apparent_temperature_max[i],
+            low: daily.apparent_temperature_min[i]
+        }
+        arrayDaily.push(dailyT);
+    }
+    return arrayDaily;
+}
 
 
 
