@@ -1,32 +1,5 @@
 <%- include("partials/header.ejs") %>
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark opacity-75">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/">Weather Application</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Profile</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">History</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Log Out</a>
-          </li>
-        </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search Location" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-      </div>
-    </div>
-</nav>
+
 
 <section id="main-body" class="py-5">
   <div id="current-forecast" class="container col-xxl-8 px-4 py-1">
@@ -120,13 +93,6 @@
   
 </section>
 
-<footer class="py-1 my-4 border-top bg-body-secondary shadow mb-0">
-  <ul class="nav justify-content-center pb-1 mb-1">
-    <li class="nav-item"><a href="https://github.com/josephuche1" class="nav-link px-2 text-body-secondary">Github</a></li>
-    <li class="nav-item"><a href="https://www.linkedin.com/in/joseph-uche/" class="nav-link px-2 text-body-secondary">LinkedIn</a></li>
-    <li class="nav-item"><a href="mailto:uchejesusboy@gmail.com" class="nav-link px-2 text-body-secondary">Email</a></li>
-  </ul>
-  <p class="text-center text-body-secondary">Created by Uche Joseph</p>
-</footer>
+
 
 <%- include("partials/footer.ejs") %>
