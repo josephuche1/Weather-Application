@@ -101,7 +101,11 @@
         <div class="modal-body p-5 pt-0">
           <form class="" action="/<%= user.username %>/change-password" method="post">
             <div class="form-floating mb-3">
-              <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="dq8i982923@3!" name="password" required>
+              <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="dq8i9923@3!" name="old_password" required>
+              <label for="floatingPassword">Old Password</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="dq8i982923@3!" name="new_password" required>
               <label for="floatingPassword">New Password</label>
             </div>
             <div class="form-floating mb-3">

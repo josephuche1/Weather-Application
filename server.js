@@ -259,12 +259,19 @@ app.get("/:username/profile", async (req, res) => {
 
 app.post("/:username/change-password", async (req,res) => {
     if(req.isAuthenticated()){
-        if(req.body.password === req.body.confirm_password){
+        if(req.body.new_password === req.body.confirm_password){
             const user = await User.findOne({username:req.params.username});
             if(user){
-                user.password = req.body.password;
-                await user.save();
-                res.redirect(`/${user.username}/profile`);
+                user.changePassword(req.body.old_password, req.body.new_password, (err) => {
+                    if(err){
+                        console.log("Error occurd while changing password:" + err.message);
+                        res.redirect(`/${user.username}/profile`);
+                    }
+                    else{
+                        console.log("Password changed successfully")
+                        res.redirect(`/${user.username}/profile`);
+                    }
+                });
             }
         }
     }
