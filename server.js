@@ -44,29 +44,113 @@ userSchema.plugin(passportLocalMongoose);
 
 const User =  new mongoose.model("user", userSchema);
 
-
 // set up passport-local dependency, this will help us serialize and desialize user information 
 // during authentication. it is used with the mongoose model.
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+// function to gather and store all required information on 
+// the current weather in an object
+// @param daily Object will be returned from the weather API
+// @param current Object will be returned from the weather API
+// returns `current` object
+function currentMore(daily, locationData){
+    const d = new Date();
+    const hour = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
+    const minute = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
+    const current = {
+        location: locationData.name,
+        high: Math.round(daily.apparent_temperature_max[0]) ,
+        low: Math.round(daily.apparent_temperature_min[0]),
+        dayAndTime: `${days[d.getDay()]}, ${hour}:${minute}`,
+        uvIndex: Math.round(daily.uv_index_max[0]),
+        chanceOfRain: daily.precipitation_probability_max[0]
+    };
+    return current;
+}
+
+
+
+function hourlyEdit(hourly){
+    const d = new Date();
+    const hour = d.getHours();
+
+    const start = hourly.time.findIndex((date) => new Date(date).getHours() > hour);
+
+    let arrayHourly = [];
+
+    for(let i = start; i < start + 6; i++){
+         const dt = new Date(hourly.time[i]);
+         const hours = dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours();
+         const minutes = dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes();
+         
+         const hourlyWeather = {
+            time: `${hours}:${minutes}`,
+            temp: Math.round(hourly.apparent_temperature[i]),
+            weathercode: hourly.weathercode[i],
+            rainProbability: hourly.precipitation_probability[i],
+        }
+        
+        arrayHourly.push(hourlyWeather);
+    }
+    
+    return arrayHourly;
+}
+
+function dailyEdit(daily){
+    let weatherInterpretation = [];
+    for(let i = 0; i < 100; i++){
+        weatherInterpretation[i] = "";
+    }
+}
+
+
 
 app.get("/", async (req, res) => {
     res.render("index1.ejs");
 });
 
-app.get("/:username", (req, res) => {
-    if(req.isAuthenticated){
-        res.render("index2.ejs");
-    }else{
-        res.redirect("/");
-    }
+app.get("/:username", async (req, res) => {
+     try{
+        const user = await User.findOne({username:req.params.username});
+        if(user || user.length !== 0){
+            //get location data
+            const location = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${user.location}&count=1&language=en&format=json`);
+            const locationData = location.data.results[0];
+            // get weather data
+            const weather = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,surface_pressure,relative_humidity_2m&hourly=apparent_temperature,weathercode,precipitation_probability&daily=weathercode,apparent_temperature_max,apparent_temperature_min,uv_index_max,precipitation_probability_max,sunset&timezone=auto`);
+            const weatherData = weather.data;
+            
+            const current = currentMore(weatherData.daily, locationData);
+            const hourly = hourlyEdit(weatherData.hourly);  
+        }
+        res.render("index2.ejs")
+     }catch(err){
+        console.log("Error: "+ err.message)
+     }
     
 });
 
 app.post("/login", async (req, res) => {
-    
+    const user = new User({
+        username: req.body.username ,
+        password: req.body.password
+    });
+
+    req.login(user, (err) => {
+        if(err){
+            console.error(err.message);
+            res.redirect("/")
+        }
+        else{
+            passport.authenticate("local")(req, res, () => {
+                res.redirect(`/${req.body.username}`);
+            })
+        }
+    })
 });
 
 app.post("/signup", async (req,res) => {
@@ -82,6 +166,11 @@ app.post("/signup", async (req,res) => {
         }
     })
 });
+
+app.get("/logout", (req,res) => {
+    req.logout();
+    res.redirect("/");
+})
 
 
 app.listen(port, () => {
