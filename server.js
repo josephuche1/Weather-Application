@@ -51,6 +51,10 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+let currentWeather;
+let currentMoreInfo;
+let hourly;
+let daily;
 
 // function to gather and store all required information on 
 // the current weather in an object
@@ -173,28 +177,31 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/:username", async (req, res) => {
-     try{
+     if(req.isAuthenticated()){
         const user = await User.findOne({username:req.params.username});
-        if(user || user.length !== 0){
+        if(user){
             //get location data
             const location = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${user.location}&count=1&language=en&format=json`);
             const locationData = location.data.results[0];
             // get weather data
             const weather = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,surface_pressure,relative_humidity_2m&hourly=apparent_temperature,weathercode,precipitation_probability&daily=weathercode,apparent_temperature_max,apparent_temperature_min,uv_index_max,precipitation_probability_max,sunset&timezone=auto`);
             const weatherData = weather.data;
-            
-            const current = currentMore(weatherData.daily, locationData, weatherData.current);
-            const hourly = hourlyEdit(weatherData.hourly); 
-            const daily = dailyEdit(weatherData.daily); 
 
-            res.render("index2.ejs", {user:user, current: weatherData.current, currentMoreInfo: current, hourly:hourly, daily:daily})
+            currentWeather = weatherData.current;
+            currentMoreInfo = currentMore(weatherData.daily, locationData, currentWeather);
+            hourly = hourlyEdit(weatherData.hourly); 
+            daily = dailyEdit(weatherData.daily); 
+
+            res.render("index2.ejs", {user:user, current: currentWeather, currentMoreInfo: currentMoreInfo, hourly:hourly, daily:daily});
         }
         else{
-            res.sendStatus(404);
+            console.log("Can't find user")
+            res.sendStatus("/");
         }
         
-     }catch(err){
-        console.log("Error: "+ err.message)
+     }else{
+        console.log(`Please login`);
+        res.redirect("/");
      }
     
 });
@@ -232,10 +239,46 @@ app.post("/signup", async (req,res) => {
     })
 });
 
-app.get("/logout", (req,res) => {
-    req.logout();
-    res.redirect("/");
+
+
+app.get("/:username/profile", async (req, res) => {
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username: req.params.username});
+        if(user){
+            res.render("profile.ejs", {user:user, currentMoreInfo: currentMoreInfo, current:currentWeather});
+        }
+        else{
+            console.log("user not found");
+            res.redirect("/");
+        }
+    } else{
+        console.log("Please Log in.");
+        res.redirect("/");
+    }
 })
+
+app.post("/:username/change-password", async (req,res) => {
+    if(req.isAuthenticated()){
+        if(req.body.password === req.body.confirm_password){
+            const user = await User.findOne({username:req.params.username});
+            if(user){
+                user.password = req.body.password;
+                await user.save();
+                res.redirect(`/${user.username}/profile`);
+            }
+        }
+    }
+    else{
+        console.log("Please, Log in");
+        res.redirect("/")
+    }
+});
+app.get("/:username/logout", (req,res) => {
+    req.logout(()=>{
+        res.redirect("/");
+    });
+});
+    
 
 
 app.listen(port, () => {

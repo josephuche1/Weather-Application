@@ -5,15 +5,15 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="72" height="57" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"/>
           </svg>
-        <h1 class="display-5 fw-bold text-body-emphasis">example123's Profile</h1>
+        <h1 class="display-5 fw-bold text-body-emphasis"><%= user.username %>'s Profile</h1>
         <div class="col-lg-6 mx-auto">
-          <p class="lead mb-4">Nicosia, 31°</p>
+          <p class="lead mb-4"><%= currentMoreInfo.location %>, <%= Math.round(current.temperature_2m) %>°</p>
           <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <button type="button" class="btn btn-outline-secondary btn-lg px-4 gap-3">Back</button>
-            <button type="button" class="btn btn-outline-secondary btn-lg px-4">History</button>
+            <a  href="/<%= user.username %>" type="button" class="btn btn-outline-secondary btn-lg px-4 gap-3">Back</a>
+            <a href="/<%= user.username %>/history" type="button" class="btn btn-outline-secondary btn-lg px-4">History</a>
           </div>
         </div>
-      </div>
+    </div>
 </section>
 
 <section id="profile-info">
@@ -22,7 +22,7 @@
              <div class="col-12">
                 <small class="fw-bold d-block">USERNAME</small>
                 <div class="d-flex flex-row justify-content-between border-bottom mx-auto">
-                    <span class="fw-bold fs-5 ms-2">example123</span>
+                    <span class="fw-bold fs-5 ms-2"><%= user.username %></span>
                     <button data-bs-toggle="modal" data-bs-target="#changeUsername" class="btn bg-transparent">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -48,7 +48,7 @@
              <div class="col-12">
                 <small class="fw-bold d-block">LOCATION</small>
                 <div class="d-flex flex-row justify-content-between mx-auto">
-                    <span class="fw-bold fs-5 ms-2">Nicosia</span>
+                    <span class="fw-bold fs-5 ms-2"><%= currentMoreInfo.location %></span>
                     <button data-bs-toggle="modal" data-bs-target="#updateLocation" class="btn bg-transparent">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -78,7 +78,7 @@
         </div>
   
         <div class="modal-body p-5 pt-0">
-          <form class="" action="/change-username" method="post">
+          <form class="" action="/<%= user.username %>/change-username" method="post">
             <div class="form-floating mb-3">
               <input type="text" class="form-control rounded-3" id="floatingInput" placeholder="example123" name="username" required>
               <label for="floatingInput">Username</label>
@@ -99,14 +99,14 @@
         </div>
   
         <div class="modal-body p-5 pt-0">
-          <form class="" action="/change-password" method="post">
+          <form class="" action="/<%= user.username %>/change-password" method="post">
             <div class="form-floating mb-3">
               <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="dq8i982923@3!" name="password" required>
               <label for="floatingPassword">New Password</label>
             </div>
             <div class="form-floating mb-3">
-              <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password" name="password" required>
-              <label for="floatingPassword">Password</label>
+              <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="dq8i982923@3!" name="confirm_password" required>
+              <label for="floatingPassword">Confirm Password</label>
             </div>
             <button id="submit" class="w-100 mb-2 btn btn-lg rounded-3 text-light bg-primary" type="submit">Change Password</button>
           </form>
@@ -124,7 +124,7 @@
         </div>
   
         <div class="modal-body p-5 pt-0">
-          <form class="" action="/update-location" method="post">
+          <form class="" action="/<%= user.username %>/update-location" method="post">
             <div class="form-floating mb-3">
               <input type="text" class="form-control rounded-3" id="floatingInput" placeholder="Berlin" name="location" required>
               <label for="floatingInput">New Location</label>
@@ -143,7 +143,7 @@
           <h5 class="mb-0">Are you sure?</h5>
           <p class="mb-0">You can always change your mind.</p>
         </div>
-        <form action="/delete-account" method="post" class="modal-footer flex-nowrap p-0">
+        <form action="/<%= user.username %>/delete-account" method="post" class="modal-footer flex-nowrap p-0">
           <input type="hidden" name="userId" value="theuserId">
           <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"><strong>Yes, delete</strong></button>
           <a href="/profile" target="_blank" type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">No</a>
