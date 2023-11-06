@@ -32,12 +32,12 @@
   <div id="current-forecast" class="container col-xxl-8 px-4 py-1">
     <div class="row flex-md-row-reverse flex-lg-row-reverse flex-sm-row-reverse align-items-center g-1 p-1 justify-content-center">
       <div class="col-10 col-sm-6 col-md-6 col-lg-6">
-        <img src="images/image_0.png" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+        <img src="images/image_<%= current.weathercode %>.png" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
       </div>
       <div class="col-lg-6 col-md-6 col-sm-6">
-        <h1 class="display-1 fw-bold text-body-emphasis lh-1 mb-3 text-center text-sm-start">21°</h1>
-        <h2 class="fw-bold text-body-emphasis mb-1 text-center text-sm-start">Nicosia</h2>
-        <p class="lead fs-6 text-center text-sm-start">29/16 Feels like 22<br>Sat, 09:14</p>
+        <h1 class="display-1 fw-bold text-body-emphasis lh-1 mb-3 text-center text-sm-start"><%= Math.round(current.temperature_2m) %>°</h1>
+        <h2 class="fw-bold text-body-emphasis mb-1 text-center text-sm-start"><%= currentMoreInfo.location %></h2>
+        <p class="lead fs-6 text-center text-sm-start"><%= currentMoreInfo.high %>°/<%= currentMoreInfo.low %>° Feels like <%= Math.round(current.apparent_temperature) %>°<br><%= currentMoreInfo.dayAndTime %></p>
       </div>
     </div>
   </div>
@@ -45,153 +45,40 @@
   <div class="container p-1 mt-4 bg-body-secondary rounded shadow" id="hourly-forecast">
     <div class="fs-6 fw-bolder py-1 ps-3">TODAY'S FORECAST</div>
     <div class="row p-1 g-2">
-
-      <div class="d-flex flex-rowcard col-12 align-items-center justify-content-around col-md-2 flex-md-column">
-          <small class="text-center fw-bold my-lg-2">6:00</small>
-          <img src="images/image_0.png" class="" width="100" alt="">
+      <% hourly.forEach((hour) => { %>
+        <div class="d-flex flex-rowcard col-12 align-items-center justify-content-around col-md-2 flex-md-column">
+          <small class="text-center fw-bold my-lg-2"><%= hour.time %></small>
+          <img src="images/image_<%= hour.weathercode %>.png" class="" width="100" alt="">
           <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0c.109.363.234.708.371 1.038.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8zm.413 1.021A31.25 31.25 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
             <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448z"/>
-          </svg> 5%</small>
+          </svg> <%= hour.rainProbability %>%</small>
           <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-thermometer-sun" viewBox="0 0 16 16">
             <path d="M5 12.5a1.5 1.5 0 1 1-2-1.415V2.5a.5.5 0 0 1 1 0v8.585A1.5 1.5 0 0 1 5 12.5z"/>
             <path d="M1 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0V2.5zM3.5 1A1.5 1.5 0 0 0 2 2.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0L5 10.486V2.5A1.5 1.5 0 0 0 3.5 1zm5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5zm4.243 1.757a.5.5 0 0 1 0 .707l-.707.708a.5.5 0 1 1-.708-.708l.708-.707a.5.5 0 0 1 .707 0zM8 5.5a.5.5 0 0 1 .5-.5 3 3 0 1 1 0 6 .5.5 0 0 1 0-1 2 2 0 0 0 0-4 .5.5 0 0 1-.5-.5zM12.5 8a.5.5 0 0 1 .5-.5h1a.5.5 0 1 1 0 1h-1a.5.5 0 0 1-.5-.5zm-1.172 2.828a.5.5 0 0 1 .708 0l.707.708a.5.5 0 0 1-.707.707l-.708-.707a.5.5 0 0 1 0-.708zM8.5 12a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5z"/>
-          </svg> 21°</small>
+          </svg> <%= hour.temp %>°</small>
       </div>
+      <% }) %>
 
-      <div class="d-flex flex-rowcard col-12 align-items-center justify-content-around col-md-2 flex-md-column">
-        <small class="text-center fw-bold my-lg-2">6:00</small>
-        <img src="images/image_0.png" class="" width="100" alt="">
-        <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0c.109.363.234.708.371 1.038.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8zm.413 1.021A31.25 31.25 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
-          <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448z"/>
-        </svg> 5%</small>
-        <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-thermometer-sun" viewBox="0 0 16 16">
-          <path d="M5 12.5a1.5 1.5 0 1 1-2-1.415V2.5a.5.5 0 0 1 1 0v8.585A1.5 1.5 0 0 1 5 12.5z"/>
-          <path d="M1 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0V2.5zM3.5 1A1.5 1.5 0 0 0 2 2.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0L5 10.486V2.5A1.5 1.5 0 0 0 3.5 1zm5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5zm4.243 1.757a.5.5 0 0 1 0 .707l-.707.708a.5.5 0 1 1-.708-.708l.708-.707a.5.5 0 0 1 .707 0zM8 5.5a.5.5 0 0 1 .5-.5 3 3 0 1 1 0 6 .5.5 0 0 1 0-1 2 2 0 0 0 0-4 .5.5 0 0 1-.5-.5zM12.5 8a.5.5 0 0 1 .5-.5h1a.5.5 0 1 1 0 1h-1a.5.5 0 0 1-.5-.5zm-1.172 2.828a.5.5 0 0 1 .708 0l.707.708a.5.5 0 0 1-.707.707l-.708-.707a.5.5 0 0 1 0-.708zM8.5 12a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5z"/>
-        </svg> 21°</small>
-      </div>
-
-      <div class="d-flex flex-rowcard col-12 align-items-center justify-content-around col-md-2 flex-md-column">
-        <small class="text-center fw-bold my-lg-2">6:00</small>
-        <img src="images/image_0.png" class="" width="100" alt="">
-        <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0c.109.363.234.708.371 1.038.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8zm.413 1.021A31.25 31.25 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
-          <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448z"/>
-        </svg> 5%</small>
-        <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-thermometer-sun" viewBox="0 0 16 16">
-          <path d="M5 12.5a1.5 1.5 0 1 1-2-1.415V2.5a.5.5 0 0 1 1 0v8.585A1.5 1.5 0 0 1 5 12.5z"/>
-          <path d="M1 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0V2.5zM3.5 1A1.5 1.5 0 0 0 2 2.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0L5 10.486V2.5A1.5 1.5 0 0 0 3.5 1zm5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5zm4.243 1.757a.5.5 0 0 1 0 .707l-.707.708a.5.5 0 1 1-.708-.708l.708-.707a.5.5 0 0 1 .707 0zM8 5.5a.5.5 0 0 1 .5-.5 3 3 0 1 1 0 6 .5.5 0 0 1 0-1 2 2 0 0 0 0-4 .5.5 0 0 1-.5-.5zM12.5 8a.5.5 0 0 1 .5-.5h1a.5.5 0 1 1 0 1h-1a.5.5 0 0 1-.5-.5zm-1.172 2.828a.5.5 0 0 1 .708 0l.707.708a.5.5 0 0 1-.707.707l-.708-.707a.5.5 0 0 1 0-.708zM8.5 12a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5z"/>
-        </svg> 21°</small>
-      </div>
-
-      <div class="d-flex flex-rowcard col-12 align-items-center justify-content-around col-md-2 flex-md-column">
-        <small class="text-center fw-bold my-lg-2">6:00</small>
-        <img src="images/image_0.png" class="" width="100" alt="">
-        <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0c.109.363.234.708.371 1.038.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8zm.413 1.021A31.25 31.25 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
-          <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448z"/>
-        </svg> 5%</small>
-        <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-thermometer-sun" viewBox="0 0 16 16">
-          <path d="M5 12.5a1.5 1.5 0 1 1-2-1.415V2.5a.5.5 0 0 1 1 0v8.585A1.5 1.5 0 0 1 5 12.5z"/>
-          <path d="M1 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0V2.5zM3.5 1A1.5 1.5 0 0 0 2 2.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0L5 10.486V2.5A1.5 1.5 0 0 0 3.5 1zm5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5zm4.243 1.757a.5.5 0 0 1 0 .707l-.707.708a.5.5 0 1 1-.708-.708l.708-.707a.5.5 0 0 1 .707 0zM8 5.5a.5.5 0 0 1 .5-.5 3 3 0 1 1 0 6 .5.5 0 0 1 0-1 2 2 0 0 0 0-4 .5.5 0 0 1-.5-.5zM12.5 8a.5.5 0 0 1 .5-.5h1a.5.5 0 1 1 0 1h-1a.5.5 0 0 1-.5-.5zm-1.172 2.828a.5.5 0 0 1 .708 0l.707.708a.5.5 0 0 1-.707.707l-.708-.707a.5.5 0 0 1 0-.708zM8.5 12a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5z"/>
-        </svg> 21°</small>
-      </div>
-
-      <div class="d-flex flex-rowcard col-12 align-items-center justify-content-around col-md-2 flex-md-column">
-        <small class="text-center fw-bold my-lg-2">6:00</small>
-        <img src="images/image_0.png" class="" width="100" alt="">
-        <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0c.109.363.234.708.371 1.038.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8zm.413 1.021A31.25 31.25 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
-          <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448z"/>
-        </svg> 5%</small>
-        <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-thermometer-sun" viewBox="0 0 16 16">
-          <path d="M5 12.5a1.5 1.5 0 1 1-2-1.415V2.5a.5.5 0 0 1 1 0v8.585A1.5 1.5 0 0 1 5 12.5z"/>
-          <path d="M1 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0V2.5zM3.5 1A1.5 1.5 0 0 0 2 2.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0L5 10.486V2.5A1.5 1.5 0 0 0 3.5 1zm5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5zm4.243 1.757a.5.5 0 0 1 0 .707l-.707.708a.5.5 0 1 1-.708-.708l.708-.707a.5.5 0 0 1 .707 0zM8 5.5a.5.5 0 0 1 .5-.5 3 3 0 1 1 0 6 .5.5 0 0 1 0-1 2 2 0 0 0 0-4 .5.5 0 0 1-.5-.5zM12.5 8a.5.5 0 0 1 .5-.5h1a.5.5 0 1 1 0 1h-1a.5.5 0 0 1-.5-.5zm-1.172 2.828a.5.5 0 0 1 .708 0l.707.708a.5.5 0 0 1-.707.707l-.708-.707a.5.5 0 0 1 0-.708zM8.5 12a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5z"/>
-        </svg> 21°</small>
-      </div>
-
-      <div class="d-flex flex-rowcard col-12 align-items-center justify-content-around col-md-2 flex-md-column">
-        <small class="text-center fw-bold my-lg-2">6:00</small>
-        <img src="images/image_0.png" class="" width="100" alt="">
-        <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0c.109.363.234.708.371 1.038.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8zm.413 1.021A31.25 31.25 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
-          <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448z"/>
-        </svg> 5%</small>
-        <small class="text-center fw-bold my-lg-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-thermometer-sun" viewBox="0 0 16 16">
-          <path d="M5 12.5a1.5 1.5 0 1 1-2-1.415V2.5a.5.5 0 0 1 1 0v8.585A1.5 1.5 0 0 1 5 12.5z"/>
-          <path d="M1 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0V2.5zM3.5 1A1.5 1.5 0 0 0 2 2.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0L5 10.486V2.5A1.5 1.5 0 0 0 3.5 1zm5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5zm4.243 1.757a.5.5 0 0 1 0 .707l-.707.708a.5.5 0 1 1-.708-.708l.708-.707a.5.5 0 0 1 .707 0zM8 5.5a.5.5 0 0 1 .5-.5 3 3 0 1 1 0 6 .5.5 0 0 1 0-1 2 2 0 0 0 0-4 .5.5 0 0 1-.5-.5zM12.5 8a.5.5 0 0 1 .5-.5h1a.5.5 0 1 1 0 1h-1a.5.5 0 0 1-.5-.5zm-1.172 2.828a.5.5 0 0 1 .708 0l.707.708a.5.5 0 0 1-.707.707l-.708-.707a.5.5 0 0 1 0-.708zM8.5 12a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1a.5.5 0 0 1 .5-.5z"/>
-        </svg> 21°</small>
-      </div>
     </div>
   </div>
 
   <div id="daily-forecast" class="container p-1 my-3 bg-body-secondary rounded shadow">
     <div class="fs-6 fw-bolder py-3 ps-3">7-DAY FORECAST</div>
     <div class="row ps-3 pe-3">
-         
-      <div class="d-flex flex-row justify-content-between align-items-center px-3 py-3 border-bottom">
-          <small class="fw-bold text-center">Today</small>
-          <div>
-            <img src="images/image_0.png" alt="" class="" width="80">
-            <span class="ms-2 fw-bold">Sunny</span>
+      <% daily.forEach((dayT) => { %>
+        <div class="d-flex flex-row justify-content-between align-items-center px-3 py-3 border-bottom">
+          <small class="fw-bold text-center"><%= dayT.day %></small>
+          <div class="container d-flex justify-content-center align-items-center">
+            <img src="images/image_<%= dayT.weathercode %>.png" alt="" class="" width="80">
+            <span class="ms-2 fw-bold w-50 text-wrap text-break"><%= dayT.description %></span>
           </div>
-          <small class="fw-bold text-center">36/22</small>
+          <small class="fw-bold text-center"><%= Math.round(dayT.high) %>°/<%= Math.round(dayT.low) %>°</small>
       </div>
+      <% }) %>
+         
 
-      <div class="d-flex flex-row justify-content-between align-items-center px-3 py-3 border-bottom">
-        <small class="fw-bold text-center">Today</small>
-        <div>
-          <img src="images/image_0.png" alt="" class="" width="80">
-          <span class="ms-2 fw-bold">Sunny</span>
-        </div>
-        <small class="fw-bold text-center">36/22</small>
-      </div>
 
-      <div class="d-flex flex-row justify-content-between align-items-center px-3 py-3 border-bottom">
-        <small class="fw-bold text-center">Today</small>
-        <div>
-          <img src="images/image_0.png" alt="" class="" width="80">
-          <span class="ms-2 fw-bold">Sunny</span>
-        </div>
-        <small class="fw-bold text-center">36/22</small>
-      </div>
-
-      <div class="d-flex flex-row justify-content-between align-items-center px-3 py-3 border-bottom">
-        <small class="fw-bold text-center">Today</small>
-        <div>
-          <img src="images/image_0.png" alt="" class="" width="80">
-          <span class="ms-2 fw-bold">Sunny</span>
-        </div>
-        <small class="fw-bold text-center">36/22</small>
-      </div>
-
-      <div class="d-flex flex-row justify-content-between align-items-center px-3 py-3 border-bottom">
-        <small class="fw-bold text-center">Today</small>
-        <div>
-          <img src="images/image_0.png" alt="" class="" width="80">
-          <span class="ms-2 fw-bold">Sunny</span>
-        </div>
-        <small class="fw-bold text-center">36/22</small>
-      </div>
-
-      <div class="d-flex flex-row justify-content-between align-items-center px-3 py-3 border-bottom">
-        <small class="fw-bold text-center">Today</small>
-        <div>
-          <img src="images/image_0.png" alt="" class="" width="80">
-          <span class="ms-2 fw-bold">Sunny</span>
-        </div>
-        <small class="fw-bold text-center">36/22</small>
-      </div>
-
-      <div class="d-flex flex-row justify-content-between align-items-center px-3 py-3 border-bottom">
-        <small class="fw-bold text-center">Today</small>
-        <div>
-          <img src="images/image_0.png" alt="" class="" width="80">
-          <span class="ms-2 fw-bold">Sunny</span>
-        </div>
-        <small class="fw-bold text-center">36/22</small>
-      </div>
     </div>
   </div>
   
@@ -204,14 +91,14 @@
             <path d="M9.5 12.5a1.5 1.5 0 1 1-2-1.415V6.5a.5.5 0 0 1 1 0v4.585a1.5 1.5 0 0 1 1 1.415z"/>
             <path d="M5.5 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0V2.5zM8 1a1.5 1.5 0 0 0-1.5 1.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0l-.166-.15V2.5A1.5 1.5 0 0 0 8 1z"/>
           </svg> Real Feel</p>
-           <div class="fs-4 ms-3 fw-bolder">30°</div>
+           <div class="fs-4 ms-3 fw-bolder"><%= Math.round(current.apparent_temperature) %>°</div>
         </div>
 
         <div class="col-5 m-3">
           <p class="fw-bolder fs-5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-wind" viewBox="0 0 16 16">
             <path d="M12.5 2A2.5 2.5 0 0 0 10 4.5a.5.5 0 0 1-1 0A3.5 3.5 0 1 1 12.5 8H.5a.5.5 0 0 1 0-1h12a2.5 2.5 0 0 0 0-5zm-7 1a1 1 0 0 0-1 1 .5.5 0 0 1-1 0 2 2 0 1 1 2 2h-5a.5.5 0 0 1 0-1h5a1 1 0 0 0 0-2zM0 9.5A.5.5 0 0 1 .5 9h10.042a3 3 0 1 1-3 3 .5.5 0 0 1 1 0 2 2 0 1 0 2-2H.5a.5.5 0 0 1-.5-.5z"/>
           </svg> Wind</p>
-          <div class="fs-4 ms-3 fw-bolder">0.2 Km/h</div>
+          <div class="fs-4 ms-3 fw-bolder"><%= current.windspeed_10m %> Km/h</div>
         </div>
 
        <div class="col-5 m-3">
@@ -219,14 +106,14 @@
           <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0c.109.363.234.708.371 1.038.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8zm.413 1.021A31.25 31.25 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
           <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448z"/>
         </svg> Chance of Rain</p>
-        <div class="fs-4 ms-3 fw-bolder">0%</div>
+        <div class="fs-4 ms-3 fw-bolder"><%= currentMoreInfo.chanceOfRain %>%</div>
        </div>
 
        <div class="col-5 m-3">
         <p class="fw-bolder  fs-5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-sun" viewBox="0 0 16 16">
           <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
         </svg> UV Index</p>
-        <div class="fs-4 ms-3 fw-bolder">3</div>
+        <div class="fs-4 ms-3 fw-bolder"><%= currentMoreInfo.uvIndex %></div>
        </div>
     </div>
   </div>
@@ -235,9 +122,9 @@
 
 <footer class="py-1 my-4 border-top bg-body-secondary shadow mb-0">
   <ul class="nav justify-content-center pb-1 mb-1">
-    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Github</a></li>
-    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">LinkedIn</a></li>
-    <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Email</a></li>
+    <li class="nav-item"><a href="https://github.com/josephuche1" class="nav-link px-2 text-body-secondary">Github</a></li>
+    <li class="nav-item"><a href="https://www.linkedin.com/in/joseph-uche/" class="nav-link px-2 text-body-secondary">LinkedIn</a></li>
+    <li class="nav-item"><a href="mailto:uchejesusboy@gmail.com" class="nav-link px-2 text-body-secondary">Email</a></li>
   </ul>
   <p class="text-center text-body-secondary">Created by Uche Joseph</p>
 </footer>

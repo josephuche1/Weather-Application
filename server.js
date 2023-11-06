@@ -57,8 +57,8 @@ const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 // @param daily Object will be returned from the weather API
 // @param current Object will be returned from the weather API
 // returns `current` object
-function currentMore(daily, locationData){
-    const d = new Date();
+function currentMore(daily, locationData, currentT){
+    const d = new Date(currentT.time);
     const hour = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
     const minute = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
     const current = {
@@ -183,10 +183,16 @@ app.get("/:username", async (req, res) => {
             const weather = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,surface_pressure,relative_humidity_2m&hourly=apparent_temperature,weathercode,precipitation_probability&daily=weathercode,apparent_temperature_max,apparent_temperature_min,uv_index_max,precipitation_probability_max,sunset&timezone=auto`);
             const weatherData = weather.data;
             
-            const current = currentMore(weatherData.daily, locationData);
-            const hourly = hourlyEdit(weatherData.hourly);  
+            const current = currentMore(weatherData.daily, locationData, weatherData.current);
+            const hourly = hourlyEdit(weatherData.hourly); 
+            const daily = dailyEdit(weatherData.daily); 
+
+            res.render("index2.ejs", {user:user, current: weatherData.current, currentMoreInfo: current, hourly:hourly, daily:daily})
         }
-        res.render("index2.ejs")
+        else{
+            res.sendStatus(404);
+        }
+        
      }catch(err){
         console.log("Error: "+ err.message)
      }
