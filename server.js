@@ -382,6 +382,52 @@ app.get("/:username/logout", (req,res) => {
     });
 });
 
+app.post("/:username/search", async (req, res) => {
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username:req.params.username});
+        if(user){
+            user.history.push(req.body.location);
+            await user.save();
+            res.redirect(`/${user.username}/search?location=${req.params.location}`)
+        } else{
+            console.log("User not found");
+            res.redirect("/");
+        }
+    }
+    else{
+        console.log("Please log in");
+        res.redirect("/");
+    }
+});
+
+app.get("/:username/search", async (req, res) =>{
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username:req.params.username});
+        if(user){
+            //get location data
+            const location = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${req.query.location}&count=1&language=en&format=json`);
+            const locationData = location.data.results[0];
+            // get weather data
+            const weather = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,surface_pressure,relative_humidity_2m&hourly=apparent_temperature,weathercode,precipitation_probability&daily=weathercode,apparent_temperature_max,apparent_temperature_min,uv_index_max,precipitation_probability_max,sunset&timezone=auto`);
+            const weatherData = weather.data;
+
+            currentWeather = weatherData.current;
+            currentMoreInfo = currentMore(weatherData.daily, locationData, currentWeather);
+            hourly = hourlyEdit(weatherData.hourly); 
+            daily = dailyEdit(weatherData.daily); 
+
+            res.render("index2.ejs", {user:user, current: currentWeather, currentMoreInfo: currentMoreInfo, hourly:hourly, daily:daily});
+        }
+        else{
+            console.log("Can't find user")
+            res.redirect("/");
+        }
+        
+     }else{
+        console.log(`Please login`);
+        res.redirect("/");
+     }
+})
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
