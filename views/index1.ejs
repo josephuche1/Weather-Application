@@ -23,7 +23,11 @@
             <li><a href="#signup" class="nav-link px-2 text-secondary">Sign Up</a></li>
           </ul>
         <div class="col-md-3 text-end">
-          <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#modalLogin">Login</button>
+          <% if(locals.show){ %>
+            <a href="/<%= username %>" type="button" class="btn btn-outline-primary me-2">Weather Page</a>
+          <% } else{ %>
+              <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#modalLogin">Login</button>
+          <% } %>
         </div>
       </header>
     

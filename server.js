@@ -55,6 +55,7 @@ let currentWeather;
 let currentMoreInfo;
 let hourly;
 let daily;
+let username;
 
 // function to gather and store all required information on 
 // the current weather in an object
@@ -173,7 +174,12 @@ function dailyEdit(daily){
 
 
 app.get("/", async (req, res) => {
-    res.render("index1.ejs");
+    if(req.isAuthenticated()){
+        res.render("index1.ejs", {show:true, username:username});
+    }
+    else{
+        res.render("index1.ejs");
+    }
 });
 
 app.get("/:username", async (req, res) => {
@@ -206,26 +212,32 @@ app.get("/:username", async (req, res) => {
     
 });
 
-app.post("/login", async (req, res) => {
+app.post("/login", (req, res) => {
     const user = new User({
         username: req.body.username ,
         password: req.body.password
     });
-
+    username = req.body.username;
     req.login(user, (err) => {
         if(err){
-            console.error(err.message);
-            res.redirect("/")
+            console.log(err.message);
+            res.redirect("/");
         }
         else{
-            passport.authenticate("local")(req, res, () => {
-                res.redirect(`/${req.body.username}`);
-            })
+            passport.authenticate("local", {
+                failureRedirect: "/",
+                successRedirect: `/${req.body.username}`
+            })(req, res)
         }
-    })
+    });
 });
 
 app.post("/signup", async (req,res) => {
+    const findUser = await User.findOne({username:req.body.username});
+    if(user){
+        console.log("Username already taken");
+        res.redirect("/")
+    }
     User.register({username:req.body.username, location:req.body.location, history:[]}, req.body.password, (err, user) => {
         if(err){
             console.error(`an error has occurred: ${err.message}`);
@@ -238,8 +250,6 @@ app.post("/signup", async (req,res) => {
         }
     })
 });
-
-
 
 app.get("/:username/profile", async (req, res) => {
     if(req.isAuthenticated()){
@@ -262,6 +272,7 @@ app.post("/:username/change-password", async (req,res) => {
         if(req.body.new_password === req.body.confirm_password){
             const user = await User.findOne({username:req.params.username});
             if(user){
+                // changing password using passport
                 user.changePassword(req.body.old_password, req.body.new_password, (err) => {
                     if(err){
                         console.log("Error occurd while changing password:" + err.message);
@@ -280,6 +291,25 @@ app.post("/:username/change-password", async (req,res) => {
         res.redirect("/")
     }
 });
+
+app.post("/:username/change-username", async (req, res)=> {
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username:req.params.username});
+        if(user){
+            user.username = req.body.username;
+            await user.save();
+            res.redirect(`/${user.username}/profile`);
+        }
+        else{
+            res.sendStatus(404);
+        }
+    }
+    else{
+        console.log("please log in");
+        res.redirect("/");
+    }
+})
+
 app.get("/:username/logout", (req,res) => {
     req.logout(()=>{
         res.redirect("/");
