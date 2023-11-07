@@ -1,0 +1,160 @@
+<%- include("partials/header.ejs")%>
+
+<section id="hero">
+    <div class="px-4 py-5 my-5 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="72" height="57" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"/>
+          </svg>
+        <h1 class="display-5 fw-bold text-body-emphasis"><%= user.username %>'s Profile</h1>
+        <div class="col-lg-6 mx-auto">
+          <p class="lead mb-4"><%= currentMoreInfo.location %>, <%= Math.round(current.temperature_2m) %>°</p>
+          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a  href="/<%= user.username %>" type="button" class="btn btn-outline-secondary btn-lg px-4 gap-3">Back</a>
+            <a href="/<%= user.username %>/history" type="button" class="btn btn-outline-secondary btn-lg px-4">History</a>
+          </div>
+        </div>
+    </div>
+</section>
+
+<section id="profile-info">
+    <div class="container p-2 border bg-body-secondary rounded">
+        <div class="row">
+             <div class="col-12">
+                <small class="fw-bold d-block">USERNAME</small>
+                <div class="d-flex flex-row justify-content-between border-bottom mx-auto">
+                    <span class="fw-bold fs-5 ms-2"><%= user.username %></span>
+                    <button data-bs-toggle="modal" data-bs-target="#changeUsername" class="btn bg-transparent">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                          </svg>
+                    </button>
+                </div>
+             </div>
+
+             <div class="col-12">
+                <small class="fw-bold d-block">PASSWORD</small>
+                <div class="d-flex flex-row justify-content-between border-bottom mx-auto">
+                    <span class="fw-bold fs-5 ms-2">*******</span>
+                    <button data-bs-toggle="modal" data-bs-target="#changePassword" class="btn bg-transparent">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                          </svg>
+                    </button>
+                </div>
+             </div>
+
+             <div class="col-12">
+                <small class="fw-bold d-block">LOCATION</small>
+                <div class="d-flex flex-row justify-content-between mx-auto">
+                    <span class="fw-bold fs-5 ms-2"><%= currentMoreInfo.location %></span>
+                    <button data-bs-toggle="modal" data-bs-target="#updateLocation" class="btn bg-transparent">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                          </svg>
+                    </button>
+                </div>
+             </div>
+       </div>
+    </div>
+
+    <div class="container bg-body-tertiary shadow my-2 rounded p-2">
+        <p class="text-danger display-4 fs-4 border-bottom">Delete Your Account</p>
+        <button class="btn btn-danger w-100 my-2" data-bs-toggle="modal" data-bs-target="#modalChoice">Delete My Account</button>
+    </div>
+</section>
+
+
+
+<!--Modals-->
+<div class="modal modal-sheet p-4 py-md-5" tabindex="-1" role="dialog" id="changeUsername">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+          <h1 class="fw-bold mb-0 fs-2">Change Username</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+  
+        <div class="modal-body p-5 pt-0">
+          <form class="" action="/<%= user.username %>/change-username" method="post">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control rounded-3" id="floatingInput" placeholder="example123" name="username" required>
+              <label for="floatingInput">Username</label>
+              <small class=" text-secondary">You will be required to log in again*</small>
+            </div>
+            <button id="submit" class="w-100 mb-2 btn btn-lg rounded-3 text-light bg-primary" type="submit">Change Username</button>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal modal-sheet p-4 py-md-5" tabindex="-1" role="dialog" id="changePassword">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+          <h1 class="fw-bold mb-0 fs-2">Change Password</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+  
+        <div class="modal-body p-5 pt-0">
+          <form class="" action="/<%= user.username %>/change-password" method="post">
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="dq8i9923@3!" name="old_password" required>
+              <label for="floatingPassword">Old Password</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="dq8i982923@3!" name="new_password" required>
+              <label for="floatingPassword">New Password</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="dq8i982923@3!" name="confirm_password" required>
+              <label for="floatingPassword">Confirm Password</label>
+            </div>
+            <button id="submit" class="w-100 mb-2 btn btn-lg rounded-3 text-light bg-primary" type="submit">Change Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal modal-sheet p-4 py-md-5" tabindex="-1" role="dialog" id="updateLocation">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+          <h1 class="fw-bold mb-0 fs-2">Update Location</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+  
+        <div class="modal-body p-5 pt-0">
+          <form class="" action="/<%= user.username %>/update-location" method="post">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control rounded-3" id="floatingInput" placeholder="Berlin" name="location" required>
+              <label for="floatingInput">New Location</label>
+            </div>
+            <button id="submit" class="w-100 mb-2 btn btn-lg rounded-3 text-light bg-primary" type="submit">Update Location</button>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal modal-sheet bg-transparent p-4 py-md-5" tabindex="-1" role="dialog" id="modalChoice">
+    <div class="modal-dialog pt-5" role="document">
+      <div class="modal-content rounded-3 shadow">
+        <div class="modal-body p-4 text-center">
+          <h5 class="mb-0">Are you sure?</h5>
+          <p class="mb-0">You can always change your mind.</p>
+        </div>
+        <form action="/<%= user.username %>/delete-account" method="post" class="modal-footer flex-nowrap p-0">
+          <input type="hidden" name="userId" value="theuserId">
+          <button type="submit" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"><strong>Yes, delete</strong></button>
+          <a href="/profile" target="_blank" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">No</a>
+        </form>
+      </div>
+    </div>
+</div>
+
+<%- include("partials/footer.ejs") %>

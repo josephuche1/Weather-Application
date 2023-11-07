@@ -2,232 +2,434 @@
 import express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
-import fs from 'node:fs/promises';
+import mongoose from "mongoose";
+import mongodb from "mongodb";
+import session from "express-session";
+import passport from "passport"
+import passportLocalMongoose from "passport-local-mongoose";
 
-// Variables Declaration
-let data;
-let currentTemperature;
-let currentWeatherCode;
-let dailyWeatherCodeArray; 
-let hourlyWeatherCodeArray;
-let dateaAndTime;
-let tempDegrees;
-let realFeelTemp;
-let windSpeed;
-let precipitaionProb;
-let uvIndex;
-let currentTab;
-let lon = 33.3366249; //default longitude
-let lat = 35.1659936; //default latitude
-let country = "Cyprus"; //default country
-let address = "";
-let key;
-
-// Paste your
-// and paste your key there. 
-// Make sure you save it.
-const filePath = './apiKey.txt';
-
-
-// lists declaration
-let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-let tabs = ["weather", "location"];
-let weatherText = [];
-let time = [];
-let dateDay = [];
-
-//getting information from the current date.
-let d = new Date();
-let hours = d.getHours();
-let day = d.getDay();
-
-// creating an express app and setting the port to 3000
 const app = express();
 const port = 3000;
 
-// Function to convert weather codes to text.
-function addWeatherText(){
-    for(let i = 0; i < dailyWeatherCodeArray.length; i++){
-        if(dailyWeatherCodeArray[i] == 0){
-            weatherText.push("Clear Sky");
-        }
-        else if(dailyWeatherCodeArray[i] == 1){
-            weatherText.push("Mainly Clear");
-        }
-        else if(dailyWeatherCodeArray[i] == 2){
-            weatherText.push("Partly cloudy");
-        }
-        else if(dailyWeatherCodeArray[i] == 3){
-            weatherText.push("Overcast");
-        }
-        else if(dailyWeatherCodeArray[i] == 45 || dailyWeatherCodeArray[i] == 48){
-            weatherText.push("Fog");
-        }
-        else if(dailyWeatherCodeArray[i] == 51 || dailyWeatherCodeArray[i] == 53 || dailyWeatherCodeArray[i] == 55){
-            weatherText.push("Drizzle");
-        }
-        else if(dailyWeatherCodeArray[i] == 56 || dailyWeatherCodeArray[i] == 57){
-            weatherText.push("Freezing Drizzle");
-        }
-        else if(dailyWeatherCodeArray[i] == 61 || dailyWeatherCodeArray[i] == 63 || dailyWeatherCodeArray[i] == 65){
-            weatherText.push("Rain");
-        }
-        else if(dailyWeatherCodeArray[i] == 66 || dailyWeatherCodeArray[i] == 67){
-            weatherText.push("Freezing Rain");
-        }
-        else if(dailyWeatherCodeArray[i] == 71 || dailyWeatherCodeArray[i] == 73 || dailyWeatherCodeArray[i] == 75){
-            weatherText.push("Snow Fall");
-        }
-        else if(dailyWeatherCodeArray[i] == 77){
-            weatherText.push("Snow Grains");
-        }
-        else if(dailyWeatherCodeArray[i] == 80 || dailyWeatherCodeArray[i] == 81 || dailyWeatherCodeArray[i] == 82){
-            weatherText.push("Rain Showers");
-        }
-        else if(dailyWeatherCodeArray[i] == 85 || dailyWeatherCodeArray[i] == 86){
-            weatherText.push("Snow Showers");
-        }
-        else if(dailyWeatherCodeArray[i] == 95){
-            weatherText.push("Thunderstorm");
-        }
-        else if(dailyWeatherCodeArray[i] == 96 || dailyWeatherCodeArray[i] == 99){
-            weatherText.push("Hailstorm");
-        }
-        else{
-            weatherText.push("NIL");
-        }
-     }
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));
+//set up session
+app.use(session({
+    secret:"weatherApplication1",
+    resave:false,
+    saveUninitialized:false
+}));
+// initialize passport
+app.use(passport.initialize());
+// set up passport to work with express session
+app.use(passport.session());
+
+
+mongoose.connect("mongodb+srv://admin-joseph:olisa312@cluster0.phfwo7l.mongodb.net/weatherApp")
+   .then(() => {
+        console.log("Connected to database successfully.")
+   })
+   .catch((err) => {
+      console.log(`Failed to connect to database: ${err.message}`);
+   })
+
+const userSchema = new mongoose.Schema({
+    username:String,
+    password:String,
+    location:String,
+    history:[String]
+});
+
+userSchema.plugin(passportLocalMongoose);
+
+const User =  new mongoose.model("user", userSchema);
+
+// set up passport-local dependency, this will help us serialize and desialize user information 
+// during authentication. it is used with the mongoose model.
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+let currentWeather;
+let currentMoreInfo;
+let hourly;
+let daily;
+let username;
+
+// function to gather and store all required information on 
+// the current weather in an object
+// @param daily Object will be returned from the weather API
+// @param current Object will be returned from the weather API
+// returns `current` object
+function currentMore(daily, locationData, currentT){
+    const d = new Date(currentT.time);
+    const hour = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
+    const minute = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
+
+    const sunset = new Date(daily.sunset[0]);
+    const sunsetHour = sunset.getHours() < 10 ? "0" + sunset.getHours() : sunset.getHours();
+    const sunsetMinute = sunset.getMinutes() < 10 ? "0" + sunset.getMinutes() : sunset.getMinutes();
+    const current = {
+        location: locationData.name,
+        high: Math.round(daily.apparent_temperature_max[0]) ,
+        low: Math.round(daily.apparent_temperature_min[0]),
+        dayAndTime: `${days[d.getDay()]}, ${hour}:${minute}`,
+        uvIndex: Math.round(daily.uv_index_max[0]),
+        chanceOfRain: daily.precipitation_probability_max[0], 
+        sunset: `${sunsetHour}:${sunsetMinute}`
+    };
+    return current;
 }
 
-//Function to equate the parts of the response from the API that  will be used to their respective variable
-function assignAllParameters(){
-    dailyWeatherCodeArray = data.daily.weathercode;
+// function to collect and store all the necessary information on the
+// hourly forecast in an object
+// @param hourly Object is return from weather API
+// return `arrayHourly` an array containing all the necessary forecast information for
+// upto 6 hours from the current hour
+function hourlyEdit(hourly){
+    const d = new Date();
+    const hour = d.getHours();
 
-    if(hours >= 18 && hours <= 23){
-        dateaAndTime = data.hourly.time.slice(-6, data.hourly.time.length);
-        tempDegrees = data.hourly.temperature_2m.slice(-6, data.hourly.temperature_2m.length);
-        hourlyWeatherCodeArray = data.hourly.weathercode.slice(-6, data.hourly.temperature_2m.length);
+    const start = hourly.time.findIndex((date) => new Date(date).getHours() > hour);
+
+    let arrayHourly = [];
+
+    for(let i = start; i < start + 6; i++){
+         const dt = new Date(hourly.time[i]);
+         const hours = dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours();
+         const minutes = dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes();
+         
+         const hourlyWeather = {
+            time: `${hours}:${minutes}`,
+            temp: Math.round(hourly.apparent_temperature[i]),
+            weathercode: hourly.weathercode[i],
+            rainProbability: hourly.precipitation_probability[i],
+        }
+        
+        arrayHourly.push(hourlyWeather);
+    }
+    
+    return arrayHourly;
+}
+
+// Function to help convert weathercodes to 
+// text that will be displayed to users
+function WeatherInterpretation(){
+    const descriptions = {
+        0: "Clear sky",
+        1: "Mainly clear",
+        2: "Partly clear",
+        3: "Overcast",
+        45: "Fog",
+        48: "Depositing rime fog",
+        51: "Light drizzle",
+        53: "Moderate drizzle",
+        55: "Dense drizzle",
+        56: "Light freezing drizzle",
+        57: "Dense freezing drizzle",
+        61: "Slight Rain",
+        63: "Moderate rain",
+        65: "Heavy rain",
+        66: "Light freezing rain",
+        67: "Heavy freezing rain",
+        71: "Slight snow fall",
+        73: "Moderate snow fall",
+        75: "Heavy snow fall",
+        77: "Snow grains",
+        80: "Slight rain showers",
+        81: "Moderate rain showers",
+        82: "Violent rain showers",
+        85: "Slight snow showers",
+        86: "Heavy snow showers",
+        95: "Thunderstorm",
+        99: "Thunderstorm (Hail)"
+    };
+
+    return descriptions;
+}
+
+// function to collect and store all the necessary information for a 7-day forecast in an object
+// @param daily Object is return from weather API
+// return `arrayDaily` an array containing all the necessary forecast information for
+// upto 7 days from the current hour
+function dailyEdit(daily){
+    const descriptions = WeatherInterpretation();
+
+    const dt = new Date();
+    const currentDay = dt.getDay();
+
+    const arrayDaily = [];
+
+    for(let i = 0; i < 7; i++){
+        const d = new Date(daily.time[i]);
+        const dy = d.getDay();
+        const dailyT = {
+            day: dy === currentDay?"Today":days[dy],
+            weathercode: daily.weathercode[i],
+            description: descriptions[daily.weathercode[i]],
+            high: daily.apparent_temperature_max[i],
+            low: daily.apparent_temperature_min[i]
+        }
+        arrayDaily.push(dailyT);
+    }
+    return arrayDaily;
+}
+
+
+app.get("/", async (req, res) => {
+    if(req.isAuthenticated()){
+        res.render("index1.ejs", {show:true, username:username});
     }
     else{
-       dateaAndTime = data.hourly.time.slice(hours, hours+7);
-       tempDegrees = data.hourly.temperature_2m.slice(hours, hours+7);
-       hourlyWeatherCodeArray = data.hourly.weathercode.slice(hours, hours+7);
+        res.render("index1.ejs");
     }
-    currentWeatherCode = data.current_weather.weathercode;
-    currentTemperature = data.hourly.temperature_2m[hours];
-    realFeelTemp = data.current_weather.temperature;
-    windSpeed = data.current_weather.windspeed;
-    precipitaionProb = data.daily.precipitation_probability_max[0];
-    uvIndex = data.daily.uv_index_max[0];
-}
+});
 
-//function to get the time from the dateAndTime array
-function getTimeFromDateAndTime(){
-    for(let i = 0; i < dateaAndTime.length; i++){
-       time.push(dateaAndTime[i].slice(-5));
-    }
-}
+app.get("/:username", async (req, res) => {
+     if(req.isAuthenticated()){
+        const user = await User.findOne({username:req.params.username});
+        if(user){
+            //get location data
+            const location = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${user.location}&count=1&language=en&format=json`);
+            const locationData = location.data.results[0];
+            // get weather data
+            const weather = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,surface_pressure,relative_humidity_2m&hourly=apparent_temperature,weathercode,precipitation_probability&daily=weathercode,apparent_temperature_max,apparent_temperature_min,uv_index_max,precipitation_probability_max,sunset&timezone=auto`);
+            const weatherData = weather.data;
 
-//function used to add the names of the various days to an array
-function addDaysToArray(){
-    let length = data.daily.time.length;
-    let counter = 0;
-    for(let i = day; i < length; i++){
-        if(i == day && counter == 0){
-            dateDay.push("Today");
-        }
-        else if(i == length-1 && counter < length){
-            dateDay.push(days[i]);
-            i = -1;
+            currentWeather = weatherData.current;
+            currentMoreInfo = currentMore(weatherData.daily, locationData, currentWeather);
+            hourly = hourlyEdit(weatherData.hourly); 
+            daily = dailyEdit(weatherData.daily); 
+
+            res.render("index2.ejs", {user:user, current: currentWeather, currentMoreInfo: currentMoreInfo, hourly:hourly, daily:daily});
         }
         else{
-            dateDay.push(days[i]);
+            console.log("Can't find user")
+            res.redirect("/");
         }
-        counter++;
-    }
-}
-
-//function to change a the address so that it can be passed ass a query to the API without any errors
-function stringifyAddress(newAdress){
-    let length = newAdress.length;
-    for(let i = 0 ; i < length; i++){
-        if(newAdress[i] == " "){
-            address += "%20"
-        }else if(newAdress[i] == ","){
-            address += "%2C";
-        }
-        else{
-            address += newAdress[i];
-        }
-    }
-}
-
-// Middlewares to parse information given by the user and access static files stored in the public folder.
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
-
-// Renders the default homepage
-app.get("/", async (req, res) => {
-    currentTab = tabs[0]
-    try{
-        const response = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,rain,surface_pressure,weathercode&daily=weathercode,sunset,uv_index_max,temperature_2m_max,precipitation_probability_max&timezone=auto&current_weather=true&forecast_days=7`);
-        data = response.data;
         
-        assignAllParameters();
-        addWeatherText();
-        getTimeFromDateAndTime();
-        addDaysToArray();
-        
-        res.render("index.ejs",{country: country, tab: currentTab, currentTemperature: currentTemperature, currentWeatherCode: currentWeatherCode, time: time, weathercode:hourlyWeatherCodeArray, temperature: tempDegrees, realFeel: realFeelTemp, windSpeed: windSpeed, chanceOfRain: precipitaionProb, currentUvIndex: uvIndex, date: dateDay, dailyWeatherCode : dailyWeatherCodeArray, weatherText: weatherText } );
-
-    }catch(error){
-        console.error(`Status: ${error.response.status}, Status Text: ${error.response.statusText}`);
-        res.render("error.ejs", {statusCode: error.response.status, statusMessage: error.response.statusText});
-    }
+     }else{
+        console.log(`Please login`);
+        res.redirect("/");
+     }
     
 });
 
-// renders the location page and allows users to enter the location of their choice.
-app.get("/location", async (req, res) =>{
-    currentTab = tabs[1];
-    res.render("location.ejs", {tab: currentTab});
+app.post("/login", (req, res) => {
+    const user = new User({
+        username: req.body.username ,
+        password: req.body.password
+    });
+    username = req.body.username;
+    req.login(user, (err) => {
+        if(err){
+            console.log(err.message);
+            res.redirect("/");
+        }
+        else{
+            passport.authenticate("local", {
+                failureRedirect: "/",
+                successRedirect: `/${req.body.username}`
+            })(req, res)
+        }
+    });
 });
 
-// submits the address info provided by the user and redirects user to the home page
-// renders the location necessary information to the homepage.
-app.post("/submit", async (req, res) => {
-    currentTab = tabs[0];
-    stringifyAddress(req.body.address);
-
-    // a try-catch error handling method used to get the API key and store it as a variable 
-    // it will be used in the API link for authorization when requesting location data.
-    try {
-        const contents = await fs.readFile(filePath, { encoding: 'utf8' });
-        key = contents;
-    } catch (error) {
-        console.error(error.message);
+app.post("/signup", async (req,res) => {
+    const findUser = await User.findOne({username:req.body.username});
+    if(findUser){
+        console.log("Username already taken");
+        res.redirect("/")
     }
+    User.register({username:req.body.username, location:req.body.location, history:[]}, req.body.password, (err, user) => {
+        if(err){
+            console.error(`an error has occurred: ${err.message}`);
+            res.redirect("/");
+        }
+        else{
+            passport.authenticate("local")(req,res, () => {
+                res.redirect(`/${req.body.username}`);
+            })
+        }
+    })
+});
 
-    // Using try-catch error handling method to request for location data
-    //Passing address and the API-key as parameters
-    try{
-        const response = await axios.get(`https://api.geoapify.com/v1/geocode/search?text=${address}&format=json&apiKey=${key}`);
-        const data = response.data;
-        lon = data.results[0].lon;
-        lat = data.results[0].lat;
-        country = data.results[0].country;
+app.get("/:username/profile", async (req, res) => {
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username: req.params.username});
+        if(user){
+            res.render("profile.ejs", {user:user, currentMoreInfo: currentMoreInfo, current:currentWeather});
+        }
+        else{
+            console.log("user not found");
+            res.redirect("/");
+        }
+    } else{
+        console.log("Please Log in.");
         res.redirect("/");
-    }catch(error){
-        // Logging the status code and text to terminal
-        console.error(`Status: ${error.response.status}, Status Text: ${error.response.statusText}`);
-        res.render("error.ejs", {statusCode: error.response.status, statusMessage: error.response.statusText});
+    }
+})
+
+app.post("/:username/change-password", async (req,res) => {
+    if(req.isAuthenticated()){
+        if(req.body.new_password === req.body.confirm_password){
+            const user = await User.findOne({username:req.params.username});
+            if(user){
+                // changing password using passport
+                user.changePassword(req.body.old_password, req.body.new_password, (err) => {
+                    if(err){
+                        console.log("Error occurd while changing password:" + err.message);
+                        res.redirect(`/${user.username}/profile`);
+                    }
+                    else{
+                        console.log("Password changed successfully")
+                        res.redirect(`/${user.username}/profile`);
+                    }
+                });
+            }
+        }
+    }
+    else{
+        console.log("Please, Log in");
+        res.redirect("/")
     }
 });
 
-// Listening to port 3000
-app.listen(port, ()=>{
-    console.log(`Server running from port ${port}`);
-    console.log("Copy local URL to browser=> localhost:3000");
+app.post("/:username/change-username", async (req, res)=> {
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username:req.params.username});
+        if(user){
+            user.username = req.body.username;
+            await user.save();
+            res.redirect(`/${user.username}/profile`);
+        }
+        else{
+            res.sendStatus(404);
+        }
+    }
+    else{
+        console.log("please log in");
+        res.redirect("/");
+    }
 });
 
+app.post("/:username/update-location", async (req,res) => {
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username:req.params.username});
+        if(user){
+            user.location = req.body.location;
+            await user.save();
+            res.redirect(`/${user.username}`);
+        }else{
+            res.sendStatus(404);
+        }
+    }
+    else{
+        console.log("please log in")
+        res.redirect("/");
+    }
+});
+
+app.post("/:username/delete-account", async (req, res) =>{
+    if(req.isAuthenticated()){
+        await User.deleteOne({username: req.params.username});
+        res.redirect("/")
+    }
+});
+
+app.get("/:username/weather", async (req,res) => {
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username:req.params.username});
+        if(user){
+             res.render("weather.ejs", {user:user, currentMoreInfo: currentMoreInfo, current:currentWeather});
+        }
+        else{
+            console.log("User not found");
+            res.redirect("/")
+        }
+    }
+    else{
+        console.log("Please Log In")
+        res.redirect("/")
+    }
+});
+
+app.get("/:username/history", async (req,res) => {
+    try {
+        if(req.isAuthenticated()){
+            const user = await User.findOne({username:req.params.username});
+            if(user){
+                res.render("coming-soon.ejs", {user:user});
+            }
+            else{
+                console.log("User not found");
+                res.redirect("/");
+            }
+        } else{
+            console.log("Please log in");
+            res.redirect("/");
+        }
+    } catch(err) {
+        console.error(err);
+        res.status(500).send("An error occurred");
+    }
+})
+
+app.get("/:username/logout", (req,res) => {
+    req.logout(()=>{
+        res.redirect("/");
+    });
+});
+
+app.post("/:username/search", async (req, res) => {
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username:req.params.username});
+        if(user){
+            user.history.push(req.body.location);
+            await user.save();
+            res.redirect(`/${user.username}/search?location=${req.params.location}`)
+        } else{
+            console.log("User not found");
+            res.redirect("/");
+        }
+    }
+    else{
+        console.log("Please log in");
+        res.redirect("/");
+    }
+});
+
+app.get("/:username/search", async (req, res) =>{
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username:req.params.username});
+        if(user){
+            //get location data
+            const location = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${req.query.location}&count=1&language=en&format=json`);
+            const locationData = location.data.results[0];
+            // get weather data
+            const weather = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,surface_pressure,relative_humidity_2m&hourly=apparent_temperature,weathercode,precipitation_probability&daily=weathercode,apparent_temperature_max,apparent_temperature_min,uv_index_max,precipitation_probability_max,sunset&timezone=auto`);
+            const weatherData = weather.data;
+
+            currentWeather = weatherData.current;
+            currentMoreInfo = currentMore(weatherData.daily, locationData, currentWeather);
+            hourly = hourlyEdit(weatherData.hourly); 
+            daily = dailyEdit(weatherData.daily); 
+
+            res.render("index2.ejs", {user:user, current: currentWeather, currentMoreInfo: currentMoreInfo, hourly:hourly, daily:daily});
+        }
+        else{
+            console.log("Can't find user")
+            res.redirect("/");
+        }
+        
+     }else{
+        console.log(`Please login`);
+        res.redirect("/");
+     }
+})
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+})
 
