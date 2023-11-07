@@ -1,4 +1,5 @@
 // importing necesary dependencies
+import "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
@@ -9,13 +10,13 @@ import passport from "passport"
 import passportLocalMongoose from "passport-local-mongoose";
 
 const app = express();
-const port = 3000;
+let port;
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 //set up session
 app.use(session({
-    secret:"weatherApplication1",
+    secret:process.env.SECRET,
     resave:false,
     saveUninitialized:false
 }));
@@ -429,7 +430,11 @@ app.get("/:username/search", async (req, res) =>{
      }
 })
 
+port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is running successfully`);
 })
 
