@@ -182,9 +182,7 @@ app.get("/", async (req, res) => {
     if(req.isAuthenticated()){
         res.render("index1.ejs", {show:true, username:username});
     }
-    else{
-        res.render("index1.ejs");
-    }
+    res.render("index1.ejs");
 });
 
 app.get("/:username", async (req, res) => {
@@ -428,7 +426,9 @@ app.get("/:username/search", async (req, res) =>{
         console.log(`Please login`);
         res.redirect("/");
      }
-})
+});
+
+app.get('/favicon.ico', (req, res) => res.sendStatus(204));
 
 port = process.env.PORT;
 if (port == null || port == "") {
