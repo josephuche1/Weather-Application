@@ -66,13 +66,18 @@ function currentMore(daily, locationData, currentT){
     const d = new Date(currentT.time);
     const hour = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
     const minute = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
+
+    const sunset = new Date(daily.sunset[0]);
+    const sunsetHour = sunset.getHours() < 10 ? "0" + sunset.getHours() : sunset.getHours();
+    const sunsetMinute = sunset.getMinutes() < 10 ? "0" + sunset.getMinutes() : sunset.getMinutes();
     const current = {
         location: locationData.name,
         high: Math.round(daily.apparent_temperature_max[0]) ,
         low: Math.round(daily.apparent_temperature_min[0]),
         dayAndTime: `${days[d.getDay()]}, ${hour}:${minute}`,
         uvIndex: Math.round(daily.uv_index_max[0]),
-        chanceOfRain: daily.precipitation_probability_max[0]
+        chanceOfRain: daily.precipitation_probability_max[0], 
+        sunset: `${sunsetHour}:${sunsetMinute}`
     };
     return current;
 }
@@ -172,7 +177,6 @@ function dailyEdit(daily){
 }
 
 
-
 app.get("/", async (req, res) => {
     if(req.isAuthenticated()){
         res.render("index1.ejs", {show:true, username:username});
@@ -234,7 +238,7 @@ app.post("/login", (req, res) => {
 
 app.post("/signup", async (req,res) => {
     const findUser = await User.findOne({username:req.body.username});
-    if(user){
+    if(findUser){
         console.log("Username already taken");
         res.redirect("/")
     }
@@ -332,6 +336,23 @@ app.post("/:username/delete-account", async (req, res) =>{
         await User.deleteOne({username: req.params.username});
         res.redirect("/")
     }
+});
+
+app.get("/:username/weather", async (req,res) => {
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username:req.params.username});
+        if(user){
+             res.render("weather.ejs", {user:user, currentMoreInfo: currentMoreInfo, current:currentWeather});
+        }
+        else{
+            console.log("User not found");
+            res.redirect("/")
+        }
+    }
+    else{
+        console.log("Please Log In")
+        res.redirect("/")
+    }
 })
 
 app.get("/:username/logout", (req,res) => {
@@ -339,7 +360,6 @@ app.get("/:username/logout", (req,res) => {
         res.redirect("/");
     });
 });
-    
 
 
 app.listen(port, () => {
