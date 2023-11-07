@@ -308,6 +308,30 @@ app.post("/:username/change-username", async (req, res)=> {
         console.log("please log in");
         res.redirect("/");
     }
+});
+
+app.post("/:username/update-location", async (req,res) => {
+    if(req.isAuthenticated()){
+        const user = await User.findOne({username:req.params.username});
+        if(user){
+            user.location = req.body.location;
+            await user.save();
+            res.redirect(`/${user.username}`);
+        }else{
+            res.sendStatus(404);
+        }
+    }
+    else{
+        console.log("please log in")
+        res.redirect("/");
+    }
+});
+
+app.post("/:username/delete-account", async (req, res) =>{
+    if(req.isAuthenticated()){
+        await User.deleteOne({username: req.params.username});
+        res.redirect("/")
+    }
 })
 
 app.get("/:username/logout", (req,res) => {
