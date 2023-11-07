@@ -206,7 +206,7 @@ app.get("/:username", async (req, res) => {
         }
         else{
             console.log("Can't find user")
-            res.sendStatus("/");
+            res.redirect("/");
         }
         
      }else{
@@ -352,6 +352,27 @@ app.get("/:username/weather", async (req,res) => {
     else{
         console.log("Please Log In")
         res.redirect("/")
+    }
+});
+
+app.get("/:username/history", async (req,res) => {
+    try {
+        if(req.isAuthenticated()){
+            const user = await User.findOne({username:req.params.username});
+            if(user){
+                res.render("coming-soon.ejs", {user:user});
+            }
+            else{
+                console.log("User not found");
+                res.redirect("/");
+            }
+        } else{
+            console.log("Please log in");
+            res.redirect("/");
+        }
+    } catch(err) {
+        console.error(err);
+        res.status(500).send("An error occurred");
     }
 })
 
