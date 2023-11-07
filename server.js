@@ -183,7 +183,9 @@ app.get("/", async (req, res) => {
      if(req.isAuthenticated()){
         res.render("index1.ejs", {show:true, username:username});
      }
-     res.render("index1.ejs");
+     else{
+        res.render("index1.ejs");
+     }
    }catch(err){
       console.log(err.message);
       res.send(500).status(err.message);
