@@ -179,178 +179,228 @@ function dailyEdit(daily){
 
 
 app.get("/", async (req, res) => {
-    if(req.isAuthenticated()){
+   try{
+     if(req.isAuthenticated()){
         res.render("index1.ejs", {show:true, username:username});
-    }
-    res.render("index1.ejs");
+     }
+     res.render("index1.ejs");
+   }catch(err){
+      console.log(err.message);
+      res.send(500).status(err.message);
+   }
 });
 
 app.get("/:username", async (req, res) => {
-     if(req.isAuthenticated()){
-        const user = await User.findOne({username:req.params.username});
-        if(user){
-            //get location data
-            const location = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${user.location}&count=1&language=en&format=json`);
-            const locationData = location.data.results[0];
-            // get weather data
-            const weather = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,surface_pressure,relative_humidity_2m&hourly=apparent_temperature,weathercode,precipitation_probability&daily=weathercode,apparent_temperature_max,apparent_temperature_min,uv_index_max,precipitation_probability_max,sunset&timezone=auto`);
-            const weatherData = weather.data;
-
-            currentWeather = weatherData.current;
-            currentMoreInfo = currentMore(weatherData.daily, locationData, currentWeather);
-            hourly = hourlyEdit(weatherData.hourly); 
-            daily = dailyEdit(weatherData.daily); 
-
-            res.render("index2.ejs", {user:user, current: currentWeather, currentMoreInfo: currentMoreInfo, hourly:hourly, daily:daily});
-        }
-        else{
-            console.log("Can't find user")
+     try{
+        if(req.isAuthenticated()){
+            const user = await User.findOne({username:req.params.username});
+            if(user){
+                //get location data
+                const location = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${user.location}&count=1&language=en&format=json`);
+                const locationData = location.data.results[0];
+                // get weather data
+                const weather = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,surface_pressure,relative_humidity_2m&hourly=apparent_temperature,weathercode,precipitation_probability&daily=weathercode,apparent_temperature_max,apparent_temperature_min,uv_index_max,precipitation_probability_max,sunset&timezone=auto`);
+                const weatherData = weather.data;
+    
+                currentWeather = weatherData.current;
+                currentMoreInfo = currentMore(weatherData.daily, locationData, currentWeather);
+                hourly = hourlyEdit(weatherData.hourly); 
+                daily = dailyEdit(weatherData.daily); 
+    
+                res.render("index2.ejs", {user:user, current: currentWeather, currentMoreInfo: currentMoreInfo, hourly:hourly, daily:daily});
+            }
+            else{
+                console.log("Can't find user")
+                res.redirect("/");
+            }
+            
+         }else{
+            console.log(`Please login`);
             res.redirect("/");
-        }
-        
-     }else{
-        console.log(`Please login`);
-        res.redirect("/");
+         }
+     }catch(err){
+        console.log(err.message);
+        res.send(500).status(err.message);
      }
     
 });
 
 app.post("/login", (req, res) => {
-    const user = new User({
-        username: req.body.username ,
-        password: req.body.password
-    });
-    username = req.body.username;
-    req.login(user, (err) => {
-        if(err){
-            console.log(err.message);
-            res.redirect("/");
-        }
-        else{
-            passport.authenticate("local", {
-                failureRedirect: "/",
-                successRedirect: `/${req.body.username}`
-            })(req, res)
-        }
-    });
+    try{
+        const user = new User({
+            username: req.body.username ,
+            password: req.body.password
+        });
+        username = req.body.username;
+        req.login(user, (err) => {
+            if(err){
+                console.log(err.message);
+                res.redirect("/");
+            }
+            else{
+                passport.authenticate("local", {
+                    failureRedirect: "/",
+                    successRedirect: `/${req.body.username}`
+                })(req, res)
+            }
+        });
+    }catch(err){
+        console.log(err.message);
+        res.send(500).status(err.message);
+    }
 });
 
 app.post("/signup", async (req,res) => {
-    const findUser = await User.findOne({username:req.body.username});
-    if(findUser){
-        console.log("Username already taken");
-        res.redirect("/")
+    try{
+        const findUser = await User.findOne({username:req.body.username});
+        if(findUser){
+            console.log("Username already taken");
+            res.redirect("/")
+        }
+        User.register({username:req.body.username, location:req.body.location, history:[]}, req.body.password, (err, user) => {
+            if(err){
+                console.error(`an error has occurred: ${err.message}`);
+                res.redirect("/");
+            }
+            else{
+                passport.authenticate("local")(req,res, () => {
+                    res.redirect(`/${req.body.username}`);
+                })
+            }
+        })
+    }catch(err){
+        console.log(err.message);
+        res.send(500).status(err.message);
     }
-    User.register({username:req.body.username, location:req.body.location, history:[]}, req.body.password, (err, user) => {
-        if(err){
-            console.error(`an error has occurred: ${err.message}`);
-            res.redirect("/");
-        }
-        else{
-            passport.authenticate("local")(req,res, () => {
-                res.redirect(`/${req.body.username}`);
-            })
-        }
-    })
 });
 
 app.get("/:username/profile", async (req, res) => {
-    if(req.isAuthenticated()){
-        const user = await User.findOne({username: req.params.username});
-        if(user){
-            res.render("profile.ejs", {user:user, currentMoreInfo: currentMoreInfo, current:currentWeather});
-        }
-        else{
-            console.log("user not found");
+    try{
+        if(req.isAuthenticated()){
+            const user = await User.findOne({username: req.params.username});
+            if(user){
+                res.render("profile.ejs", {user:user, currentMoreInfo: currentMoreInfo, current:currentWeather});
+            }
+            else{
+                console.log("user not found");
+                res.redirect("/");
+            }
+        } else{
+            console.log("Please Log in.");
             res.redirect("/");
         }
-    } else{
-        console.log("Please Log in.");
-        res.redirect("/");
+    }catch(err){
+        console.log(err.message);
+        res.send(404).status(err.message);
     }
 })
 
 app.post("/:username/change-password", async (req,res) => {
-    if(req.isAuthenticated()){
-        if(req.body.new_password === req.body.confirm_password){
-            const user = await User.findOne({username:req.params.username});
-            if(user){
-                // changing password using passport
-                user.changePassword(req.body.old_password, req.body.new_password, (err) => {
-                    if(err){
-                        console.log("Error occurd while changing password:" + err.message);
-                        res.redirect(`/${user.username}/profile`);
-                    }
-                    else{
-                        console.log("Password changed successfully")
-                        res.redirect(`/${user.username}/profile`);
-                    }
-                });
+    try{
+        if(req.isAuthenticated()){
+            if(req.body.new_password === req.body.confirm_password){
+                const user = await User.findOne({username:req.params.username});
+                if(user){
+                    // changing password using passport
+                    user.changePassword(req.body.old_password, req.body.new_password, (err) => {
+                        if(err){
+                            console.log("Error occurd while changing password:" + err.message);
+                            res.redirect(`/${user.username}/profile`);
+                        }
+                        else{
+                            console.log("Password changed successfully")
+                            res.redirect(`/${user.username}/profile`);
+                        }
+                    });
+                }
             }
         }
-    }
-    else{
-        console.log("Please, Log in");
-        res.redirect("/")
+        else{
+            console.log("Please, Log in");
+            res.redirect("/")
+        }
+    }catch(err){
+        console.log(err.message);
+        res.send(500).status(err.message);
     }
 });
 
 app.post("/:username/change-username", async (req, res)=> {
-    if(req.isAuthenticated()){
-        const user = await User.findOne({username:req.params.username});
-        if(user){
-            user.username = req.body.username;
-            await user.save();
-            res.redirect(`/${user.username}/profile`);
+    try{
+        if(req.isAuthenticated()){
+            const user = await User.findOne({username:req.params.username});
+            if(user){
+                user.username = req.body.username;
+                await user.save();
+                res.redirect(`/${user.username}/profile`);
+            }
+            else{
+                res.sendStatus(404);
+            }
         }
         else{
-            res.sendStatus(404);
+            console.log("please log in");
+            res.redirect("/");
         }
-    }
-    else{
-        console.log("please log in");
-        res.redirect("/");
+    }catch(err){
+        console.log(err.message);
+        res.send(500).status(err.message);
     }
 });
 
 app.post("/:username/update-location", async (req,res) => {
-    if(req.isAuthenticated()){
-        const user = await User.findOne({username:req.params.username});
-        if(user){
-            user.location = req.body.location;
-            await user.save();
-            res.redirect(`/${user.username}`);
-        }else{
-            res.sendStatus(404);
+    try{
+        if(req.isAuthenticated()){
+            const user = await User.findOne({username:req.params.username});
+            if(user){
+                user.location = req.body.location;
+                await user.save();
+                res.redirect(`/${user.username}`);
+            }else{
+                res.sendStatus(404);
+            }
         }
-    }
-    else{
-        console.log("please log in")
-        res.redirect("/");
+        else{
+            console.log("please log in")
+            res.redirect("/");
+        }
+    }catch(err){
+        console.log(err.message);
+        res.send(500).status(err.message)
     }
 });
 
 app.post("/:username/delete-account", async (req, res) =>{
-    if(req.isAuthenticated()){
-        await User.deleteOne({username: req.params.username});
-        res.redirect("/")
+    try{
+        if(req.isAuthenticated()){
+            await User.deleteOne({username: req.params.username});
+            res.redirect("/")
+        }
+    }catch(err){
+        console.log(err.message);
+        res.send(500).status(err.message)
     }
 });
 
 app.get("/:username/weather", async (req,res) => {
-    if(req.isAuthenticated()){
-        const user = await User.findOne({username:req.params.username});
-        if(user){
-             res.render("weather.ejs", {user:user, currentMoreInfo: currentMoreInfo, current:currentWeather});
+    try{
+        if(req.isAuthenticated()){
+            const user = await User.findOne({username:req.params.username});
+            if(user){
+                 res.render("weather.ejs", {user:user, currentMoreInfo: currentMoreInfo, current:currentWeather});
+            }
+            else{
+                console.log("User not found");
+                res.redirect("/")
+            }
         }
         else{
-            console.log("User not found");
+            console.log("Please Log In")
             res.redirect("/")
         }
-    }
-    else{
-        console.log("Please Log In")
-        res.redirect("/")
+    }catch(err){
+        console.log(err.message)
+        res.status(400).send(err.message);
     }
 });
 
@@ -371,7 +421,7 @@ app.get("/:username/history", async (req,res) => {
         }
     } catch(err) {
         console.error(err);
-        res.status(500).send("An error occurred");
+        res.status(500).send(err.message);
     }
 })
 
@@ -382,49 +432,59 @@ app.get("/:username/logout", (req,res) => {
 });
 
 app.post("/:username/search", async (req, res) => {
-    if(req.isAuthenticated()){
-        const user = await User.findOne({username:req.params.username});
-        if(user){
-            user.history.push(req.body.location);
-            await user.save();
-            res.redirect(`/${user.username}/search?location=${req.params.location}`)
-        } else{
-            console.log("User not found");
+     try{
+        if(req.isAuthenticated()){
+            const user = await User.findOne({username:req.params.username});
+            if(user){
+                user.history.push(req.body.location);
+                await user.save();
+                res.redirect(`/${user.username}/search?location=${req.params.location}`)
+            } else{
+                console.log("User not found");
+                res.redirect("/");
+            }
+        }
+        else{
+            console.log("Please log in");
             res.redirect("/");
         }
-    }
-    else{
-        console.log("Please log in");
-        res.redirect("/");
-    }
+     }catch(err){
+        console.log(err.message);
+        res.status(500).send(err.message)
+     }
 });
 
 app.get("/:username/search", async (req, res) =>{
-    if(req.isAuthenticated()){
-        const user = await User.findOne({username:req.params.username});
-        if(user){
-            //get location data
-            const location = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${req.query.location}&count=1&language=en&format=json`);
-            const locationData = location.data.results[0];
-            // get weather data
-            const weather = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,surface_pressure,relative_humidity_2m&hourly=apparent_temperature,weathercode,precipitation_probability&daily=weathercode,apparent_temperature_max,apparent_temperature_min,uv_index_max,precipitation_probability_max,sunset&timezone=auto`);
-            const weatherData = weather.data;
-
-            currentWeather = weatherData.current;
-            currentMoreInfo = currentMore(weatherData.daily, locationData, currentWeather);
-            hourly = hourlyEdit(weatherData.hourly); 
-            daily = dailyEdit(weatherData.daily); 
-
-            res.render("index2.ejs", {user:user, current: currentWeather, currentMoreInfo: currentMoreInfo, hourly:hourly, daily:daily});
-        }
-        else{
-            console.log("Can't find user")
+     try{
+        if(req.isAuthenticated()){
+            const user = await User.findOne({username:req.params.username});
+            if(user){
+                //get location data
+                const location = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${req.query.location}&count=1&language=en&format=json`);
+                const locationData = location.data.results[0];
+                // get weather data
+                const weather = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,surface_pressure,relative_humidity_2m&hourly=apparent_temperature,weathercode,precipitation_probability&daily=weathercode,apparent_temperature_max,apparent_temperature_min,uv_index_max,precipitation_probability_max,sunset&timezone=auto`);
+                const weatherData = weather.data;
+    
+                currentWeather = weatherData.current;
+                currentMoreInfo = currentMore(weatherData.daily, locationData, currentWeather);
+                hourly = hourlyEdit(weatherData.hourly); 
+                daily = dailyEdit(weatherData.daily); 
+    
+                res.render("index2.ejs", {user:user, current: currentWeather, currentMoreInfo: currentMoreInfo, hourly:hourly, daily:daily});
+            }
+            else{
+                console.log("Can't find user")
+                res.redirect("/");
+            }
+            
+         }else{
+            console.log(`Please login`);
             res.redirect("/");
-        }
-        
-     }else{
-        console.log(`Please login`);
-        res.redirect("/");
+         }
+     }catch(err){
+        console.log(err.message);
+        res.status(500).send(err.message);
      }
 });
 
