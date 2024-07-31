@@ -26,7 +26,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-mongoose.connect("mongodb+srv://admin-joseph:olisa312@cluster0.phfwo7l.mongodb.net/weatherApp")
+mongoose.connect(process.env.MONGO_URI)
    .then(() => {
         console.log("Connected to database successfully.")
    })
